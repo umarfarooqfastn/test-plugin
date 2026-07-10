@@ -1,9 +1,0 @@
-{
-  "name": "ucl-gateway",
-  "description": "Connects to the UCL gateway MCP server and ships the gateway usage skill. On install the agent can immediately discover the org's skills (list_skills) and run governed integration/connector actions through the gateway - no manual MCP setup, the gateway handles auth itself.",
-  "version": "0.1.1",
-  "author": {
-    "name": "Daniyal",
-    "email": "daniyal@fastn.ai"
-  }
-}

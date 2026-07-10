@@ -1,18 +1,20 @@
 {
-  "name": "fastn-marketplace",
+  "name": "fastn",
   "metadata": {
-    "description": "Marketplace for the UCL gateway plugin - one-click connect to the UCL gateway with its usage skill."
+    "description": "fastn Connect - build and run integrations, connectors, workflows, and governed automations on the fastn platform, for both your product and the AI agents it runs, straight from Claude."
   },
   "owner": {
-    "name": "Daniyal",
-    "email": "daniyal@fastn.ai"
+    "name": "fastn",
+    "email": "support@fastn.ai"
   },
   "plugins": [
     {
-      "name": "ucl-gateway",
-      "description": "Registers the UCL gateway MCP server and ships the gateway usage skill, so on install the agent connects directly to the gateway and knows how to discover and run the org's governed integration/connector skills.",
-      "source": "./plugins/ucl-gateway",
-      "category": "development"
+      "name": "connect",
+      "description": "Build and run integrations on the fastn platform from Claude - create connectors, plan syncs, author workflows, build embedded widgets, and run governed, multi-tenant automations across every app your customers connect. The same integrations serve both your product's features and the AI agents it runs for customers, with governed, audited access. Connects Claude to fastn through one governed MCP gateway that dynamically serves fastn's full, growing library of skills, with no manual MCP setup.",
+      "source": "./plugins/connect",
+      "category": "development",
+      "homepage": "https://fastn.ai",
+      "license": "MIT"
     }
   ]
 }
