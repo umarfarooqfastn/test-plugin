@@ -1,0 +1,23 @@
+{
+  "name": "fastn",
+  "description": "Build and run integrations on the fastn platform from Claude - create connectors, plan syncs, author and test workflows, build embedded widgets, and run governed, multi-tenant automations across every app your customers connect. The same integrations power both your product's own features and the AI agents it runs for customers, each with governed, audited access. It works by connecting Claude to fastn through one governed MCP gateway that dynamically serves fastn's full, growing library of skills: new capabilities appear automatically as they are published, and the gateway handles authentication, identity, and policy. No manual setup.",
+  "version": "0.2.0",
+  "author": {
+    "name": "fastn",
+    "email": "support@fastn.ai"
+  },
+  "homepage": "https://fastn.ai",
+  "repository": "https://github.com/fastn-ai/fastn-claude-plugins",
+  "license": "MIT",
+  "keywords": [
+    "fastn",
+    "integrations",
+    "automation",
+    "connectors",
+    "mcp",
+    "gateway",
+    "multi-tenant",
+    "agents",
+    "saas"
+  ]
+}
