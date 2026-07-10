@@ -1,6 +1,6 @@
 ---
 name: gateway
-description: How to work with the fastn integration gateway (connected as an MCP server by this plugin) - discover and use fastn's dynamically served library of skills for building integrations (connectors, workflows, syncs, widgets) and running your organization's governed automations, and reuse an installed skill's playbook from a local copy instead of re-fetching it. Use whenever a task touches an external app, connector, integration, or automation through fastn.
+description: How to work with the fastn integration gateway (connected as an MCP server by this plugin) - discover and use fastn's dynamically served library of skills for building integrations (connectors, workflows, syncs, widgets) and running your organization's governed automations, install a skill locally from its signed download link (a ready-to-install zip), and reuse an installed skill's playbook from a local copy instead of re-fetching it. Use whenever a task touches an external app, connector, integration, or automation through fastn.
 ---
 
 # fastn gateway
@@ -16,7 +16,9 @@ This plugin connects the fastn gateway as an MCP server. The gateway is one gove
 
 ## Discover and run skills
 
-- Call `list_skills` to see your organization's saved skills (each returns slug, name, description, version, mode).
+- Call `list_skills` to see your organization's saved skills. Each entry returns slug, name, description, version, mode - and a `downloadUrl` (in the structured data): a signed link serving that skill as a ready-to-install zip (`<slug>/SKILL.md` + `references/`). Plain GET, valid ~15 minutes, multi-use; re-list for fresh links.
+- Prefer install-first: download the zip from `downloadUrl`, install the skill for the user, then follow the installed copy.
+- To read a skill's content without installing or running it, call `load_skill {"slug": "<slug>"}` (it returns the SKILL.md plus its own `downloadUrl`).
 - Run a skill by its slug.
 
 ## Reuse an installed skill instead of re-fetching it
@@ -29,12 +31,12 @@ The decision, every time:
 
 1. Call `list_skills` and read the skill's current version.
 2. If the skill is already installed here and the installed version matches, follow the installed copy and do NOT call the gateway skill tool.
-3. If it is not installed, or the version differs, call the gateway skill tool once to get the current instructions, then install them as a skill so later runs reuse them. If you cannot install it yourself, hand the user the ready-to-install skill and tell them how to add it.
+3. If it is not installed, or the version differs, install it from its `downloadUrl` (already in the `list_skills` response): download the zip - it IS the complete, verbatim skill (SKILL.md + references/) - install it, then follow the installed copy. If you cannot install it yourself, hand the user the ready-to-install file and tell them how to add it. If the response carries no `downloadUrl` (older gateway), fall back to `load_skill` + rebuilding the files by hand as described below.
 
 Example:
-- `list_skills` -> `acme-sync v3`.
+- `list_skills` -> `acme-sync v3` with a `downloadUrl`.
 - Installed here as `acme-sync v3`? Follow the installed copy; do NOT call the tool.
-- Missing, or installed `v2` (!= v3)? Call the `acme_sync` tool once, install/update it, then follow it.
+- Missing, or installed `v2` (!= v3)? Download the zip from the `downloadUrl`, install/update it, then follow it.
 
 ## Installing a skill is mandatory, not optional
 
@@ -44,16 +46,16 @@ The moment step 3 above applies (the skill is not installed, or its version diff
 
 > Step 0 — version sync (do this FIRST, every run): this file is tagged `<!-- fastn skill: <slug> v<N> -->`. Call `list_skills({ slugs: ["<slug>"] })` and compare. If the published version differs, re-fetch and reinstall before doing anything else; make it the first item in your task list.
 
-Fill `<slug>`/`<N>` with the skill's real slug and version. On a mismatch, re-fetch from the gateway tool, rebuild the `.skill`, and re-install so the tracked version updates.
+Fill `<slug>`/`<N>` with the skill's real slug and version. On a mismatch, re-fetch from the gateway (the fresh `downloadUrl`, else `load_skill`), rebuild the `.skill`, and re-install so the tracked version updates.
 
 ## Rules
 
 - When a skill is read from the gateway, your first step must be to install it for the user, then follow whatever the skill instructions say. Never skip the install step.
-- Install the fetched skill body VERBATIM - word-for-word identical to the SKILL you load through the tool, never in your own words. Reproduce the exact text: do not paraphrase, summarize, reword, shorten, reorder, or translate it. (Do not include the gateway's leading "install this / how to run" note - that framing is not part of the skill.) The only things you add are the version tag and the Step 0 block above.
+- The downloaded zip already IS the verbatim skill - installing its files unchanged satisfies the verbatim rule automatically, so prefer it. When rebuilding by hand instead (no `downloadUrl`), install the fetched skill body VERBATIM - word-for-word identical, never in your own words: do not paraphrase, summarize, reword, shorten, reorder, or translate it. (Do not include the gateway's leading "install this / how to run" note - that framing is not part of the skill.) The only things you add are the version tag and the Step 0 block above.
 - Add the skill install/update to your task list so you don't miss it, and do not proceed with the skill instructions until that task is complete.
 - Never rely on an installed copy without first checking its version against the gateway - it could be stale. The version number is the source of truth, not the visible text: any version difference ALWAYS triggers an update, even when the body looks unchanged (a reference file may have changed).
 - The installed SKILL.md MUST start with the `---` YAML frontmatter. NEVER put the version tag or the Step 0 block above it - that triggers "SKILL.md must start with YAML frontmatter". Place them right AFTER the closing `---`.
-- If the skill has reference documents, fetch each one (`open_skill_reference`) and install them alongside SKILL.md (in a `references/` folder). A SKILL.md installed without ALL of its reference files is an INCOMPLETE install and counts as NOT installed.
+- The downloaded zip already contains ALL reference documents in its `references/` folder. Only when rebuilding by hand: fetch each one (`open_skill_reference`) and install them alongside SKILL.md (in a `references/` folder). A SKILL.md installed without ALL of its reference files is an INCOMPLETE install and counts as NOT installed.
 - To update an already-installed skill, build the updated skill and present it as a `.skill` file for the user to Save again. Saving a skill whose name already exists prompts the user to update/replace it - that IS the update path. Never tell the user you "cannot update the skill"; always hand them the one-click `.skill` to Save.
 
 ### Version-update gates (hard gates, not ordering preferences)
@@ -75,7 +77,9 @@ Then re-fetch and apply only the listed files: `~` changed, `+` added, `-` remov
 
 ## Install or save a skill for the user
 
-Build a SKILL.md (+ `references/` if needed) in a skill folder, package it into a `.skill` zip via a `.py` file, and present the resulting `.skill` file to the user - presenting a `.skill` file automatically renders a "Save skill" install button they can click.
+Preferred: download the skill's zip from its `downloadUrl` - it already contains the complete skill folder (`<slug>/SKILL.md` + `references/`). Add the version tag + Step 0 block to its SKILL.md, package it as a `.skill` zip, and present the `.skill` file to the user - presenting a `.skill` file automatically renders a "Save skill" install button they can click. In an environment with a local skills directory, you may instead unzip it straight into that directory.
+
+Fallback (no `downloadUrl`): build the SKILL.md (+ `references/`) by hand from `load_skill` + `open_skill_reference`, then package and present the same way.
 
 ## Feedback
 
