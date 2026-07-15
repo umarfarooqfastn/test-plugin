@@ -1,0 +1,14 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/plugins/connect/hooks/load-gateway-skill.sh"
+          }
+        ]
+      }
+    ]
+  }
+}

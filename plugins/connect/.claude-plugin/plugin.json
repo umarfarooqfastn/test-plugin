@@ -2,7 +2,7 @@
   "name": "connect",
   "displayName": "fastn Connect",
   "description": "Build and run integrations on the fastn platform from Claude - create connectors, plan syncs, author and test workflows, build embedded widgets, and run governed, multi-tenant automations across every app your customers connect. Claude connects through one governed MCP gateway that dynamically serves fastn's growing library of skills - new capabilities appear as they are published, with authentication, identity, and policy handled by the gateway. No manual setup.",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "author": {
     "name": "fastn",
     "email": "support@fastn.ai"
