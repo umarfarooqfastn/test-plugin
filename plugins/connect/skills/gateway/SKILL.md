@@ -40,7 +40,7 @@ Example:
 
 ## Installing a skill is mandatory, not optional
 
-The moment step 3 above applies (the skill is not installed, or its version differs), you MUST do the Install step below and present the `.skill` file to the user in that same turn, before you continue the task. Do not use the fetched instructions once and skip installing, and never silently fall back to only calling the tool.
+The moment step 3 above applies (the skill is not installed, or its version differs), you MUST complete the Install step below in that same turn, before you continue the task: write the skill into the persistent skills directory (filesystem clients) or present the `.skill` file (app clients). Do not use the fetched instructions once and skip installing, and never silently fall back to only calling the tool.
 
 **Track the version + add a Step 0 self-check inside the installed skill.** Tag the installed skill with its gateway slug and version, and place this block IMMEDIATELY AFTER the closing `---` of the YAML frontmatter (never above it - the file MUST start with `---`) so every future run self-checks:
 
@@ -56,13 +56,13 @@ Fill `<slug>`/`<N>` with the skill's real slug and version. On a mismatch, re-fe
 - Never rely on an installed copy without first checking its version against the gateway - it could be stale. The version number is the source of truth, not the visible text: any version difference ALWAYS triggers an update, even when the body looks unchanged (a reference file may have changed).
 - The installed SKILL.md MUST start with the `---` YAML frontmatter. NEVER put the version tag or the Step 0 block above it - that triggers "SKILL.md must start with YAML frontmatter". Place them right AFTER the closing `---`.
 - The downloaded zip already contains ALL reference documents in its `references/` folder. Only when rebuilding by hand: fetch each one (`open_skill_reference`) and install them alongside SKILL.md (in a `references/` folder). A SKILL.md installed without ALL of its reference files is an INCOMPLETE install and counts as NOT installed.
-- To update an already-installed skill, build the updated skill and present it as a `.skill` file for the user to Save again. Saving a skill whose name already exists prompts the user to update/replace it - that IS the update path. Never tell the user you "cannot update the skill"; always hand them the one-click `.skill` to Save.
+- To update an already-installed skill: on filesystem clients, overwrite the skill's folder in the persistent skills directory with the new version and reload - that IS the update path there. On app clients, build the updated skill and present it as a `.skill` file for the user to Save again - saving a skill whose name already exists prompts the user to update/replace it. Never tell the user you "cannot update the skill".
 
 ### Version-update gates (hard gates, not ordering preferences)
 
 - Fetching current instructions or a reference doc is NOT the same as installing. Fetching gives you content to use now; installing PERSISTS it for later runs. Doing the fetch NEVER satisfies the install/update requirement - they are separate, both-required steps.
 - On ANY version mismatch, your literal FIRST action is to create a task `reinstall <slug> v<N>` as item #1 and mark every other task - including the user's request - `blockedBy` it. Do not start a blocked task until that one is complete.
-- Output gate: do NOT begin the user's task until the updated `.skill` has been PRESENTED to the user. The presented `.skill` is a required deliverable, not an ordering preference.
+- Output gate: do NOT begin the user's task until the update has been DELIVERED - written into the persistent skills directory (filesystem clients) or presented as a `.skill` file (app clients). The delivered install is a required deliverable, not an ordering preference.
 
 **Find what changed between versions** with `list_skills` (status-only, no file bodies):
 
@@ -77,9 +77,18 @@ Then re-fetch and apply only the listed files: `~` changed, `+` added, `-` remov
 
 ## Install or save a skill for the user
 
-Preferred: download the skill's zip from its `downloadUrl` - it already contains the complete skill folder (`<slug>/SKILL.md` + `references/`). Add the version tag + Step 0 block to its SKILL.md, package it as a `.skill` zip, and present the `.skill` file to the user - presenting a `.skill` file automatically renders a "Save skill" install button they can click. In an environment with a local skills directory, you may instead unzip it straight into that directory.
+Always start from the skill's zip (`downloadUrl`) - it already contains the complete skill folder (`<slug>/SKILL.md` + `references/`). Add the version tag + Step 0 block to its SKILL.md, then install it the way YOUR environment persists skills:
 
-Fallback (no `downloadUrl`): build the SKILL.md (+ `references/`) by hand from `load_skill` + `open_skill_reference`, then package and present the same way.
+**Filesystem clients (Claude Code, GitHub Copilot CLI, or any agent that can write local files):** unzip the skill folder straight into a persistent skills directory - that IS the install; do not package a `.skill` file:
+
+- Project-level (preferred - discovered by BOTH Claude Code and Copilot CLI): `.claude/skills/<slug>/`
+- Personal: `~/.claude/skills/<slug>/` (Claude Code) or `~/.copilot/skills/<slug>/` (Copilot CLI)
+
+After copying, reload so it registers (Copilot CLI: `/skills reload`, verify with `/skills info <slug>`; Claude Code picks it up next session start), and tell the user the exact directory it was installed to. A session temp or artifact directory (for example `~/.copilot/session-state/...` or a scratch folder) is NOT an install - it disappears with the session; the files must land in one of the persistent directories above.
+
+**App clients with no writable local skills directory (Claude, Claude Cowork):** package the folder as a `.skill` zip and present the `.skill` file to the user - presenting a `.skill` file automatically renders a "Save skill" install button they can click.
+
+Fallback (no `downloadUrl`): build the SKILL.md (+ `references/`) by hand from `load_skill` + `open_skill_reference`, then install or present the same way.
 
 ## Feedback
 
