@@ -1,0 +1,99 @@
+{
+  "name": "Create Label",
+  "description": "Create a project label (POST /projects/{id}/labels). Now also supports setting a priority.",
+  "inputContract": {
+    "type": "object",
+    "required": [
+      "id",
+      "name",
+      "color"
+    ],
+    "properties": {
+      "id": {
+        "type": "string",
+        "title": "Project ID or Path"
+      },
+      "name": {
+        "type": "string",
+        "title": "Name"
+      },
+      "color": {
+        "type": "string",
+        "title": "Color",
+        "description": "Hex like '#FF0000'."
+      },
+      "priority": {
+        "type": "integer",
+        "title": "Priority",
+        "description": "Label priority, higher sorts first."
+      },
+      "description": {
+        "type": "string",
+        "title": "Description"
+      }
+    }
+  },
+  "outputContract": {
+    "type": "object",
+    "required": [
+      "id",
+      "name",
+      "color"
+    ],
+    "properties": {
+      "id": {
+        "type": "integer",
+        "title": "ID"
+      },
+      "name": {
+        "type": "string",
+        "title": "Name"
+      },
+      "color": {
+        "type": "string",
+        "title": "Color",
+        "description": "Background color in hex."
+      },
+      "archived": {
+        "type": "boolean",
+        "title": "Archived"
+      },
+      "priority": {
+        "type": "integer",
+        "title": "Priority"
+      },
+      "subscribed": {
+        "type": "boolean",
+        "title": "Subscribed"
+      },
+      "text_color": {
+        "type": "string",
+        "title": "Text Color"
+      },
+      "description": {
+        "type": "string",
+        "title": "Description"
+      },
+      "description_html": {
+        "type": "string",
+        "title": "Description HTML"
+      },
+      "is_project_label": {
+        "type": "boolean",
+        "title": "Is Project Label"
+      }
+    }
+  },
+  "httpConfig": {
+    "url": "https://gitlab.com/api/v4/projects/{{input.id}}/labels",
+    "method": "POST",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer {{auth.token}}"
+    },
+    "bodyTemplate": "{\"name\": \"{{input.name}}\", \"color\": \"{{input.color}}\", \"description\": \"{{input.description}}\"}"
+  },
+  "authConfig": null,
+  "code": "",
+  "rateLimit": null
+}
