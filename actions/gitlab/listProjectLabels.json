@@ -1,0 +1,76 @@
+{
+  "name": "List Project Labels",
+  "description": "List all labels for a project, optionally with issue/merge-request counts (GET /projects/{id}/labels).",
+  "inputContract": {
+    "type": "object",
+    "required": [
+      "id"
+    ],
+    "properties": {
+      "id": {
+        "type": "string",
+        "title": "Project ID or Path"
+      },
+      "withCounts": {
+        "type": "boolean",
+        "title": "Include counts",
+        "description": "Include open issue/MR counts per label."
+      }
+    }
+  },
+  "outputContract": {
+    "type": "object",
+    "required": [
+      "labels"
+    ],
+    "properties": {
+      "labels": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "title": "ID"
+            },
+            "name": {
+              "type": "string",
+              "title": "Name"
+            },
+            "color": {
+              "type": "string",
+              "title": "Color"
+            },
+            "description": {
+              "type": "string",
+              "title": "Description"
+            },
+            "open_issues_count": {
+              "type": "integer",
+              "title": "Open Issues Count"
+            },
+            "open_merge_requests_count": {
+              "type": "integer",
+              "title": "Open Merge Requests Count"
+            }
+          }
+        },
+        "title": "Labels"
+      }
+    }
+  },
+  "httpConfig": {
+    "url": "https://gitlab.com/api/v4/projects/{{input.id}}/labels",
+    "method": "GET",
+    "headers": {
+      "Authorization": "Bearer {{auth.token}}"
+    },
+    "queryParams": {
+      "with_counts": "{{input.withCounts}}"
+    },
+    "bodyTemplate": null
+  },
+  "authConfig": null,
+  "code": null,
+  "rateLimit": null
+}
