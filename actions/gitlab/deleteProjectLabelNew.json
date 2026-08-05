@@ -1,0 +1,39 @@
+{
+  "name": "Delete Project Label New",
+  "description": "Delete a project label by ID (DELETE /projects/{id}/labels/{label_id}).",
+  "inputContract": {
+    "type": "object",
+    "required": [
+      "id",
+      "labelId"
+    ],
+    "properties": {
+      "id": {
+        "type": "string",
+        "title": "Project ID or Path"
+      },
+      "labelId": {
+        "type": "string",
+        "title": "Label ID",
+        "description": "Numeric ID of the label to delete."
+      }
+    }
+  },
+  "outputContract": {
+    "type": "object",
+    "required": [],
+    "properties": {}
+  },
+  "httpConfig": {
+    "url": "https://gitlab.com/api/v4/projects/{{input.id}}/labels/{{input.labelId}}",
+    "method": "DELETE",
+    "headers": {
+      "Authorization": "Bearer {{auth.token}}"
+    },
+    "queryParams": {},
+    "bodyTemplate": null
+  },
+  "authConfig": null,
+  "code": null,
+  "rateLimit": null
+}
