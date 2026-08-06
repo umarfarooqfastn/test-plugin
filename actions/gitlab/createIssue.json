@@ -1,0 +1,268 @@
+{
+  "name": "Create Issue",
+  "description": "Testing the is_default_external_version fix",
+  "inputContract": {
+    "type": "object",
+    "required": [
+      "id",
+      "title"
+    ],
+    "properties": {
+      "id": {
+        "type": "string",
+        "title": "Project ID or Path",
+        "description": "The ID or URL-encoded path of the project."
+      },
+      "title": {
+        "type": "string",
+        "title": "Title",
+        "description": "The title of the issue."
+      },
+      "labels": {
+        "type": "string",
+        "title": "Labels",
+        "description": "Comma-separated label names to apply to the issue."
+      },
+      "description": {
+        "type": "string",
+        "title": "Description",
+        "description": "The description of the issue."
+      },
+      "assignee_ids": {
+        "type": "array",
+        "items": {
+          "type": "integer"
+        },
+        "title": "Assignee IDs",
+        "description": "User IDs to assign the issue to."
+      },
+      "milestone_id": {
+        "type": "integer",
+        "title": "Milestone ID",
+        "description": "The global ID of a milestone to assign the issue to."
+      }
+    }
+  },
+  "outputContract": {
+    "type": "object",
+    "required": [
+      "id",
+      "iid",
+      "project_id",
+      "title",
+      "state",
+      "web_url"
+    ],
+    "properties": {
+      "id": {
+        "type": "integer",
+        "title": "ID",
+        "description": "Global issue ID."
+      },
+      "iid": {
+        "type": "integer",
+        "title": "IID",
+        "description": "Project-scoped issue ID."
+      },
+      "type": {
+        "type": "string",
+        "title": "Type"
+      },
+      "state": {
+        "enum": [
+          "opened",
+          "closed"
+        ],
+        "type": "string",
+        "title": "State"
+      },
+      "title": {
+        "type": "string",
+        "title": "Title"
+      },
+      "_links": {
+        "type": "object",
+        "properties": {
+          "self": {
+            "type": "string"
+          },
+          "notes": {
+            "type": "string"
+          },
+          "project": {
+            "type": "string"
+          },
+          "award_emoji": {
+            "type": "string"
+          }
+        }
+      },
+      "author": {
+        "type": "object",
+        "title": "Author",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string"
+          },
+          "web_url": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          }
+        }
+      },
+      "labels": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "title": "Labels"
+      },
+      "upvotes": {
+        "type": "integer"
+      },
+      "web_url": {
+        "type": "string",
+        "title": "Web URL"
+      },
+      "assignee": {
+        "type": "object",
+        "title": "Assignee"
+      },
+      "due_date": {
+        "type": "string",
+        "title": "Due Date"
+      },
+      "severity": {
+        "type": "string"
+      },
+      "assignees": {
+        "type": "array",
+        "items": {
+          "type": "object"
+        },
+        "title": "Assignees"
+      },
+      "closed_at": {
+        "type": "string",
+        "title": "Closed At"
+      },
+      "closed_by": {
+        "type": "object",
+        "title": "Closed By"
+      },
+      "downvotes": {
+        "type": "integer"
+      },
+      "has_tasks": {
+        "type": "boolean"
+      },
+      "milestone": {
+        "type": "object",
+        "title": "Milestone"
+      },
+      "created_at": {
+        "type": "string",
+        "title": "Created At"
+      },
+      "issue_type": {
+        "type": "string"
+      },
+      "project_id": {
+        "type": "integer",
+        "title": "Project ID"
+      },
+      "references": {
+        "type": "object",
+        "properties": {
+          "full": {
+            "type": "string"
+          },
+          "short": {
+            "type": "string"
+          },
+          "relative": {
+            "type": "string"
+          }
+        }
+      },
+      "subscribed": {
+        "type": "boolean"
+      },
+      "time_stats": {
+        "type": "object",
+        "properties": {
+          "time_estimate": {
+            "type": "integer"
+          },
+          "total_time_spent": {
+            "type": "integer"
+          },
+          "human_time_estimate": {
+            "type": "string"
+          },
+          "human_total_time_spent": {
+            "type": "string"
+          }
+        }
+      },
+      "updated_at": {
+        "type": "string",
+        "title": "Updated At"
+      },
+      "description": {
+        "type": "string",
+        "title": "Description"
+      },
+      "confidential": {
+        "type": "boolean"
+      },
+      "user_notes_count": {
+        "type": "integer"
+      },
+      "discussion_locked": {
+        "type": "boolean"
+      },
+      "merge_requests_count": {
+        "type": "integer"
+      },
+      "blocking_issues_count": {
+        "type": "integer"
+      },
+      "task_completion_status": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "integer"
+          },
+          "completed_count": {
+            "type": "integer"
+          }
+        }
+      }
+    }
+  },
+  "httpConfig": {
+    "url": "https://gitlab.com/api/v4/projects/{{input.id}}/issues",
+    "method": "POST",
+    "headers": {
+      "Authorization": "Bearer {{auth.token}}"
+    },
+    "bodyType": "none",
+    "queryParams": {
+      "title": "{{input.title}}",
+      "description": "{{input.description}}"
+    },
+    "bodyTemplate": null
+  },
+  "authConfig": null,
+  "code": "",
+  "rateLimit": null
+}
