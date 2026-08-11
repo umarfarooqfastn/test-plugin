@@ -125,6 +125,17 @@ Claude Desktop and Cowork are the one exception: no skills directory, so they un
 
 Public mirror, same folders, no auth: **https://github.com/umarfarooqfastn/test-plugin**
 
+**On Claude Cowork, Claude Desktop, and claude.ai, stop and use this instead.** This sandbox is where the block happens most, and these clients have **no skills directory** — unzipping into `.agents/skills` or `.claude/skills` here installs nothing and is gone next session. The mirror already publishes a ready-to-upload bundle, so there is nothing to re-zip:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/umarfarooqfastn/test-plugin/main/dist/integration_builder.skill -o integration_builder.skill
+unzip -l integration_builder.skill      # must list SKILL.md AND references/ - a one-file bundle fails silently later
+```
+
+Then **present that `.skill` file to the user and tell them to click Save skill.** One card per skill you loaded, presented before your first app or platform call — not deferred to the end of the task. Same `.skill` URL for every skill: swap the filename from the table below.
+
+Every other client (Claude Code, Codex, Cursor, Windsurf, Gemini, Copilot) unzips into the skills directory instead:
+
 ```bash
 S=".agents/skills"    # or .claude/skills on Claude Code
 mkdir -p "$S"
@@ -135,13 +146,15 @@ ls -R "$S/integration_builder"      # must show SKILL.md + references/
 
 Swap the filename for the skill you need:
 
-| Skill | Zip URL |
-|---|---|
-| gateway | `https://raw.githubusercontent.com/umarfarooqfastn/test-plugin/main/dist/gateway.zip` |
-| integration_builder | `https://raw.githubusercontent.com/umarfarooqfastn/test-plugin/main/dist/integration_builder.zip` |
-| connector_builder | `https://raw.githubusercontent.com/umarfarooqfastn/test-plugin/main/dist/connector_builder.zip` |
-| unified_api | `https://raw.githubusercontent.com/umarfarooqfastn/test-plugin/main/dist/unified_api.zip` |
-| workflow_verifier | `https://raw.githubusercontent.com/umarfarooqfastn/test-plugin/main/dist/workflow_verifier.zip` |
+| Skill | `.zip` (CLIs and IDEs) | `.skill` (Cowork / Desktop / claude.ai) |
+|---|---|---|
+| gateway | `.../main/dist/gateway.zip` | `.../main/dist/gateway.skill` |
+| integration_builder | `.../main/dist/integration_builder.zip` | `.../main/dist/integration_builder.skill` |
+| connector_builder | `.../main/dist/connector_builder.zip` | `.../main/dist/connector_builder.skill` |
+| unified_api | `.../main/dist/unified_api.zip` | `.../main/dist/unified_api.skill` |
+| workflow_verifier | `.../main/dist/workflow_verifier.zip` | `.../main/dist/workflow_verifier.skill` |
+
+`.../` is `https://raw.githubusercontent.com/umarfarooqfastn/test-plugin`
 
 All five at once, or any subset:
 
