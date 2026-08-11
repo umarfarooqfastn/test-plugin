@@ -156,11 +156,15 @@ Swap the filename for the skill you need:
 
 `.../` is `https://raw.githubusercontent.com/umarfarooqfastn/test-plugin`
 
-All five at once, or any subset:
+All five at once, or any subset — **CLIs and IDEs only, never on Cowork / Desktop / claude.ai**:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/umarfarooqfastn/test-plugin/main/install.sh | bash
 ```
+
+**Why that line is banned on the account-based clients, and what to say instead.** Their sandbox is an ephemeral container destroyed when the session ends, and their skills live in the user's account, not on its filesystem. `.claude/skills` there is directory-scoped scratch, not the account — so the installer writes real files, exits 0, prints a success line, and installs *nothing*. There is no tool that writes to account skills; that path is user-initiated by design, since a skill is instructions that steer future sessions.
+
+So on those clients: **the `.skill` card is the install**, not a nicety offered after one. Never report a skill as installed there on the strength of files on disk — the only completed install is a card the user has clicked Save on. If you cannot present one, say plainly that this session runs uninstalled and the next starts cold.
 
 **No `unzip`?** Every file is also plain text at the same base — `.../main/<slug>/SKILL.md` and `.../main/<slug>/references/<doc>.md`. `https://raw.githubusercontent.com/umarfarooqfastn/test-plugin/main/skills.json` lists each skill's exact reference filenames:
 

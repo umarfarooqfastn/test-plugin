@@ -78,7 +78,16 @@ need curl
 need unzip
 
 # ---- pick the destination -----------------------------------------------
+# Account-based Claude clients (Cowork, Desktop, claude.ai) run in an ephemeral
+# container and keep skills in the user's account, not on this filesystem.
+# Writing to .claude/skills here looks like a successful install and installs
+# nothing, so detect it and hand back .skill bundles to upload instead.
+is_account_sandbox() {
+  [ -d /home/claude ] || [ "${HOME:-}" = /home/claude ]
+}
+
 detect_agent() {
+  if is_account_sandbox; then echo claude-ai; return; fi
   if [ -n "${CLAUDE_CODE:-}${CLAUDECODE:-}" ]; then echo claude-code; return; fi
   if [ -d .claude ];          then echo claude-code; return; fi
   if [ -d .agents ];          then echo codex;       return; fi
@@ -118,14 +127,31 @@ if [ "$AGENT" = "claude-ai" ] || [ "$AGENT" = "claude-desktop" ] || [ "$AGENT" =
   done
   cat <<EOF
 
-Done. These clients store skills in your account, not on disk.
-Upload each .skill file at:  Customize > Skills > Add
-(Settings > Capabilities > Code Execution must be on.)
+These clients keep skills in your ACCOUNT, not on this filesystem, so
+downloading them is not the install. To actually install:
+
+  Upload each .skill file above at:  Customize > Skills > Add
+  (Settings > Capabilities > Code Execution must be on.)
+
+If an agent is running this for you, it should hand you each .skill file
+so you can click Save skill. Until you do, nothing is installed - this
+container is discarded when the session ends.
 EOF
   exit 0
 fi
 
 # ---- everything else: unzip straight into the skills directory ----------
+if is_account_sandbox; then
+  cat >&2 <<EOF
+WARNING: this looks like an ephemeral Claude sandbox (Cowork / Desktop /
+claude.ai), but --agent $AGENT installs to a directory on this container.
+Skills there are NOT registered to the account and vanish with the session.
+Re-run with:  --agent claude-ai      (produces .skill files to upload)
+Continuing anyway in 5s; Ctrl-C to abort.
+EOF
+  sleep 5
+fi
+
 mkdir -p "$DEST"
 if ! touch "$DEST/.fastn-probe" 2>/dev/null; then
   echo "cannot write to $DEST" >&2

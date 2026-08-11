@@ -78,7 +78,9 @@ Copilot CLI and Gemini CLI need `/skills reload` afterwards. If you created the 
 
 ## Claude.ai, Claude Desktop, Claude Cowork
 
-These store skills in your account rather than on disk, so there is no directory to unzip into. Download the ready-made bundle and upload it:
+These store skills in your **account** rather than on disk, so there is no directory to unzip into — and their sandbox is an ephemeral container that is discarded when the session ends. Do not run `install.sh` there expecting an install: it writes real files, exits 0, and registers nothing. `.claude/skills` in that container is directory-scoped scratch, not your account.
+
+Downloading a bundle is not the install either. **Uploading it is.** Grab the ready-made bundle and upload it:
 
 | Skill | Bundle |
 |---|---|
