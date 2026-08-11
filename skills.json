@@ -1,0 +1,79 @@
+{
+  "$comment": "Machine-readable index of the fastn agent skills in this repo. Fetch this file first, pick a skill, then GET its `zip` (or its `skill_md` + `references`) and drop the folder into your agent's skills directory.",
+  "repo": "https://github.com/umarfarooqfastn/test-plugin",
+  "raw_base": "https://raw.githubusercontent.com/umarfarooqfastn/test-plugin/main",
+  "source": "fastn gateway MCP (connect.fastn.dev)",
+  "install_dirs": {
+    "claude-code": [".claude/skills", "~/.claude/skills"],
+    "claude-ai": ["upload the .skill file at Customize > Skills > Add"],
+    "claude-desktop": ["upload the .skill file at Customize > Skills > Add"],
+    "claude-cowork": ["upload the .skill file at Customize > Skills > Add"],
+    "codex": [".agents/skills", "~/.agents/skills"],
+    "cursor": [".agents/skills", ".cursor/skills"],
+    "windsurf": [".agents/skills", ".windsurf/skills"],
+    "gemini-cli": [".agents/skills", ".gemini/skills"],
+    "copilot": [".agents/skills", ".github/skills", "~/.copilot/skills"],
+    "default": [".agents/skills"]
+  },
+  "skills": [
+    {
+      "slug": "gateway",
+      "name": "gateway",
+      "version": 9,
+      "description": "Operating manual for the fastn gateway - clear its required first read, pick and install the right fastn skill, and keep the installed copy in sync with the published version. Use whenever a task touches a fastn connector, integration, workflow, sync, widget, automation, or any external app reached through fastn.",
+      "skill_md": "https://raw.githubusercontent.com/umarfarooqfastn/test-plugin/main/gateway/SKILL.md",
+      "zip": "https://raw.githubusercontent.com/umarfarooqfastn/test-plugin/main/dist/gateway.zip",
+      "skill_bundle": "https://raw.githubusercontent.com/umarfarooqfastn/test-plugin/main/dist/gateway.skill",
+      "references": []
+    },
+    {
+      "slug": "integration_builder",
+      "name": "integration-builder",
+      "version": 16,
+      "description": "Plan, map, build, and verify fastn integrations and workflows through the fastn Workflow MCP, in four phases - PLAN, MAP, BUILD, VERIFY. Use to sync, integrate, connect, or migrate data between systems, or to build or modify any fastn workflow, automate on an app event, schedule a sync, or expose a webhook.",
+      "skill_md": "https://raw.githubusercontent.com/umarfarooqfastn/test-plugin/main/integration_builder/SKILL.md",
+      "zip": "https://raw.githubusercontent.com/umarfarooqfastn/test-plugin/main/dist/integration_builder.zip",
+      "skill_bundle": "https://raw.githubusercontent.com/umarfarooqfastn/test-plugin/main/dist/integration_builder.skill",
+      "references": [
+        "references/plan.md",
+        "references/mapping.md",
+        "references/build.md",
+        "references/test-cases.md",
+        "references/sandbox.md",
+        "references/workflow-patterns.md",
+        "references/multi-tenancy.md",
+        "references/dynamic-config.md"
+      ]
+    },
+    {
+      "slug": "connector_builder",
+      "name": "connector-builder",
+      "version": 1,
+      "description": "Production knowledge base for building and debugging fastn connectors through the fastn Connector MCP. Covers REST, GraphQL, MCP-protocol, FTP/FTPS/SFTP, DB, gRPC, and AWS Lambda connectors; every auth strategy; action input/output contracts; webhook configs. Use whenever creating, editing, testing, or debugging a fastn connector, auth method, action, or webhook.",
+      "skill_md": "https://raw.githubusercontent.com/umarfarooqfastn/test-plugin/main/connector_builder/SKILL.md",
+      "zip": "https://raw.githubusercontent.com/umarfarooqfastn/test-plugin/main/dist/connector_builder.zip",
+      "skill_bundle": "https://raw.githubusercontent.com/umarfarooqfastn/test-plugin/main/dist/connector_builder.skill",
+      "references": []
+    },
+    {
+      "slug": "unified_api",
+      "name": "unified-api",
+      "version": 2,
+      "description": "Configure and use the fastn Unified API through the fastn Workflow MCP - a platform-global catalog of categories with canonical entities that execute across whichever providers each org has connected. Use when asked to create a unified API, add a category/entity, map a connector into a unified entity, or debug UNIFIED_* errors.",
+      "skill_md": "https://raw.githubusercontent.com/umarfarooqfastn/test-plugin/main/unified_api/SKILL.md",
+      "zip": "https://raw.githubusercontent.com/umarfarooqfastn/test-plugin/main/dist/unified_api.zip",
+      "skill_bundle": "https://raw.githubusercontent.com/umarfarooqfastn/test-plugin/main/dist/unified_api.skill",
+      "references": []
+    },
+    {
+      "slug": "workflow_verifier",
+      "name": "workflow-verifier",
+      "version": 2,
+      "description": "Verify a fastn workflow, trigger, widget, or whole use case actually works - end to end, with runtime evidence - through the fastn Workflow MCP. Use when asked to verify, test, QA, or health-check an existing workflow or integration, and after any workflow/trigger/widget/config change.",
+      "skill_md": "https://raw.githubusercontent.com/umarfarooqfastn/test-plugin/main/workflow_verifier/SKILL.md",
+      "zip": "https://raw.githubusercontent.com/umarfarooqfastn/test-plugin/main/dist/workflow_verifier.zip",
+      "skill_bundle": "https://raw.githubusercontent.com/umarfarooqfastn/test-plugin/main/dist/workflow_verifier.skill",
+      "references": ["references/verify-matrix.md"]
+    }
+  ]
+}
