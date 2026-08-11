@@ -101,6 +101,8 @@ if [ -z "$DEST" ]; then
     windsurf)           [ "$SCOPE" = global ] && DEST="$HOME/.agents/skills"   || DEST=".agents/skills" ;;
     gemini)             [ "$SCOPE" = global ] && DEST="$HOME/.agents/skills"   || DEST=".agents/skills" ;;
     copilot)            [ "$SCOPE" = global ] && DEST="$HOME/.copilot/skills"  || DEST=".agents/skills" ;;
+    # account-based clients have no skills directory; stage bundles to upload
+    claude-ai|claude-desktop|cowork) DEST="./fastn-skills" ;;
     codex|agents|*)     [ "$SCOPE" = global ] && DEST="$HOME/.agents/skills"   || DEST=".agents/skills" ;;
   esac
 fi
