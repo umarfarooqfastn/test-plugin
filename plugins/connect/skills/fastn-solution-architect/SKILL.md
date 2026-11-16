@@ -126,7 +126,7 @@ Each piece: what it is, when to use it, limits to know. P = fastn platform, C = 
 ### P15. Settings
 - **Is**: people and roles, secrets, configs, database, workflow tags, audit log, billing and limits.
 - **Use**: roles decide who can build and who can only operate; secrets hold values workflows need.
-- **Know**: some actions need a minimum role (for example connecting an AI tool needs Developer).
+- **Know**: some actions need a minimum role (for example connecting an AI tool needs Developer). API keys are created under Embed → API keys and MCP; a key you hand to a customer must reach only that customer (`references/setup.md`, API keys).
 
 ### C1. MCP endpoint
 - **Is**: one governed MCP endpoint per workspace that an AI client connects to. A **customer MCP URL** connects a customer's own AI client as that customer, with no fastn account.
@@ -192,6 +192,7 @@ Each piece: what it is, when to use it, limits to know. P = fastn platform, C = 
 | "Same job across every CRM / store / helpdesk" | P9 unified API | entity mapped, and the operation supported, for each provider |
 | "When X happens in the app, do Y" | P7 app event trigger + P6 workflow | connector lists that event |
 | "Our backend pushes data out to an app" | P11 `runAction` for one call; P7 webhook trigger + P6 workflow when it needs reshaping or retries | the action exists with the fields you send |
+| "Give one of our customers their own API endpoint" | P6 workflow + an API key that reaches only that customer and only runs that workflow | the call works with that key and is refused for another customer |
 | "Their system will call us" | P7 webhook trigger + P6 workflow | none; test with one POST |
 | "Every night / every hour" | P7 schedule trigger + P6 workflow | run time fits the tier |
 | "Tell our product when something happens" | P8 event subscription | your https endpoint verifies the signature |

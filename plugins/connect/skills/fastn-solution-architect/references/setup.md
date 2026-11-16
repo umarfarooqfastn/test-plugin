@@ -9,6 +9,7 @@ P1 Customers · P2 Connectors · P3 Auth providers · P4 Connections · P5 Conne
 ## P1. Customers
 1. Decide your customer id: the id the customer already has in your database.
 2. Create the customer under **Operate → Customers**, or from the backend with `customer.register({ name })`. A setup link also creates it on first use.
+3. Or over REST from your backend: `POST https://api.fastn.dev/api/v1/orgs` with `{ "name": "...", "orgId": "<your id>" }` and your API key. Register the customer before you mint its first embed token, or mint with `createIfMissing` (see `sdk.md`).
 Check: the customer shows in the list with your id.
 
 ## P2. Connectors
@@ -65,11 +66,27 @@ Check: send a test event and see a verified `200` from your endpoint.
 3. Call it from the SDK (`customer.records(...)`) or REST. Hand over to the `unified_api` skill for setup.
 Check: the same call returns a record from two different providers.
 
+## API keys
+Open **Embed → API keys and MCP → API keys → Create key**.
+1. Name it after its job. Mode: **Test** for development (calls need `X-fastn-Test-Mode: true`), **Live** for production (also pick the environment).
+2. Permissions: the **Embed backend** preset fits a backend that registers customers and mints embed tokens. That key should reach **every customer**; a key limited to some customers is refused for those calls.
+3. A key you hand to one of your customers: custom permissions with only what they need, reach **only that customer**, and a resource scope if it should call one workflow. Never give a customer a key that reaches every customer.
+4. Optional: allowed IP addresses, a rate limit per minute, an expiry.
+5. Optional: **caller identity verification (HMAC)**. Modes: Off, Monitor only, Enforce. See P10 step 3.
+6. Copy the key: it is shown once. Store it in your backend's secret store. To replace a leaked key, create a new one, switch over, then revoke the old one.
+Check: one call with the key returns `200`, and a call for a customer it may not reach is refused.
+
 ## P10. Widget
-1. Build it under **Embed → Widget**: which integrations show, what customers may change, how it looks. Save and publish.
-2. Mint an embed token per customer on your backend (`references/sdk.md`).
-3. Mount it: iframe, SDK, or send a share link for a pilot.
-4. Before going live: your own OAuth app (P3), `https://api.fastn.dev` allowed in your CSP `frame-src`, test as a real customer.
+1. Build it under **Embed → Widget**: which integrations show, what customers may change, how it looks. Save and publish; customers see only what is published.
+2. Register the customer (P1) and create the backend key (API keys, above).
+3. Optional, recommended: identity verification. Turn it on for the key; the signing secret is shown once and never goes to the browser. On every customer call send `x-org-id`, `x-user-id` and `x-identity-hmac` = hex HMAC-SHA256 of `<orgId>\n<userId>` with that secret. In Enforce mode a missing or wrong hash is refused.
+4. Mint one embed token per customer, per session, on your backend (`references/sdk.md`). Send `userId`. Tokens last 8 hours; the SDK refreshes them, up to 7 days per session. At the cap the widget posts `fastn:session-expired` to the page: mint a new token.
+5. Mount it, simplest first:
+   - iframe: `<iframe src="https://api.fastn.dev/api/v1/embed/iframe?token=..." allow="clipboard-write" style="width:100%;height:600px;border:none"></iframe>`
+   - React or script tag from `@fastn-ai/embed`, or your own UI with the headless hooks: register your page's origin on the key that mints the tokens, or the browser blocks it.
+   - No code yet: a share link from **Embed → Widget → Embed**, with an expiry. Treat it as a secret.
+6. If you send setup links with `redirectUrl`, register those addresses first (`sdk.md`); others are refused with `400 SETUP_LINK_REDIRECT_NOT_ALLOWED`.
+7. Before going live: your own OAuth app (P3), `https://api.fastn.dev` in your CSP `frame-src`, and test with the widget builder's customer preview, then as a real customer.
 Check: signed in as a test customer, you see only that customer's connections and can connect one app end to end.
 
 ## P11. SDK
