@@ -128,4 +128,27 @@ token = customer.embed_token({"userId": "user_123"})["data"]["token"]   # answer
 - `embed_token` and `connect` create the customer if it does not exist yet, so they work before `register()`.
 - Errors: `from fastn.platform import FastnApiError, FastnNetworkError`. `FastnApiError` has status, code, message, details, request_id.
 - Retries: the client retries reads, and only the writes fastn de-duplicates (unified record writes and workflow execute) when they carry `idempotency_key=`. Other writes are never retried, key or not.
+- A write with your own retries. Copy this shape; do not write a bare `raise` outside an `except` block:
+```python
+import time
+from fastn.platform import FastnApiError, FastnNetworkError
+
+def create_contact(customer, email, first_name):
+    contacts = customer.records("crm", "contact")
+    last_error = None
+    for attempt in range(3):
+        try:
+            return contacts.create(
+                {"first_name": first_name, "email": email},
+                idempotency_key=f"contact:{email}",   # same key on every try: never two contacts
+            )
+        except FastnNetworkError as err:
+            last_error = err                # no answer: safe to resend with the same key
+        except FastnApiError as err:
+            if err.status < 500:
+                raise                       # our mistake or a missing connection: do not resend
+            last_error = err
+        time.sleep(2 ** attempt)
+    raise last_error
+```
 - For anything not listed here, read the package's own docstrings: the public docs show Node.js first.
