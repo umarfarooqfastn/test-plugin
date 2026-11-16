@@ -74,9 +74,11 @@ Open **Embed → API keys and MCP → API keys → Create key**.
 4. Optional: allowed IP addresses, a rate limit per minute, an expiry.
 5. Optional: **caller identity verification (HMAC)**. Modes: Off, Monitor only, Enforce. See P10 step 3.
 6. Copy the key: it is shown once. Store it in your backend's secret store. To replace a leaked key, create a new one, switch over, then revoke the old one.
+7. Calling a workflow with a key: `POST https://api.fastn.dev/api/v1/workflows/<workflow id>/execute` with `Authorization: Bearer <key>`, `Content-Type: application/json` and body `{ "input": { ... } }`. A test key also needs `X-fastn-Test-Mode: true`. The workflow's **API** tab shows the exact call to copy.
 Check: one call with the key returns `200`, and a call for a customer it may not reach is refused.
 
 ## P10. Widget
+First do **Connect your product** (P5): no integration goes live for customers without it.
 1. Build it under **Embed → Widget**: which integrations show, what customers may change, how it looks. Save and publish; customers see only what is published.
 2. Register the customer (P1) and create the backend key (API keys, above).
 3. Optional, recommended: identity verification. Turn it on for the key; the signing secret is shown once and never goes to the browser. On every customer call send `x-org-id`, `x-user-id` and `x-identity-hmac` = hex HMAC-SHA256 of `<orgId>\n<userId>` with that secret. In Enforce mode a missing or wrong hash is refused.

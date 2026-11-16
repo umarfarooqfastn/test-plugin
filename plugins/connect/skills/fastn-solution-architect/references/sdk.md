@@ -64,6 +64,7 @@ const schema = await fastn.connectors.getConnectorActionSchema({ connector: "hub
 const r = await customer.runAction({ connector: "hubspot", action: "getContact", input: { contactId: "123" } });
 ```
 `action` is the slug, not the display name. The call runs with that customer's own connection.
+An error from the app does not throw: `runAction` returns normally with `data.success: false`, the app's `data.status` and `data.error`. Always check `data.success`. It throws `FastnApiError` only when fastn cannot run the action at all (for example an unknown action slug).
 
 ### Events to your backend
 ```typescript
@@ -118,10 +119,13 @@ from fastn.platform import FastnClient
 
 fastn = FastnClient(api_key=os.environ["FASTN_API_KEY"])   # timeout= in seconds, retries=
 customer = fastn.customer("acme_customer_42")
+token = customer.embed_token({"userId": "user_123"})["data"]["token"]   # answers are the raw body: read ["data"]
 ```
 - Synchronous: no `await`. One client per process; call `fastn.close()` on shutdown. Do not name your own file `fastn.py`.
 - Methods are snake_case, not the Node.js names: `customer.embed_token({...})`, `customer.call_log(id)`, `customer.run_action(connector, action, input)`, `customer.records(category, entity, provider=...)`.
 - Options are keyword arguments: `idempotency_key=`, `correlation_id=`, `retries=`, `timeout=`.
 - Events: `parse_event(secret, headers, raw_body)` raises `ValueError` on a bad signature; `verify_event_signature(...)` returns True or False. Pass the raw body bytes (Flask: `request.get_data()`; FastAPI: `await request.body()`).
-- Errors: `FastnApiError` (status, code, message, details, request_id) and `FastnNetworkError`.
+- `embed_token` and `connect` create the customer if it does not exist yet, so they work before `register()`.
+- Errors: `from fastn.platform import FastnApiError, FastnNetworkError`. `FastnApiError` has status, code, message, details, request_id.
+- Retries: the client retries reads, and only the writes fastn de-duplicates (unified record writes and workflow execute) when they carry `idempotency_key=`. Other writes are never retried, key or not.
 - For anything not listed here, read the package's own docstrings: the public docs show Node.js first.

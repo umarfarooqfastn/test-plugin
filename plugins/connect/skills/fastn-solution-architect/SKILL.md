@@ -1,6 +1,6 @@
 ---
 name: fastn-solution-architect
-description: Turns a SaaS team's integration use case into a checked fastn solution and guides the setup, with no call to fastn. Asks the questions needed to pin down the requirement, maps each need to the right fastn or fastn Connect piece (connectors, connections, workflows, triggers, inbound and outbound webhooks, events, unified APIs, widget, SDK, MCP gateway), checks the live workspace before saying anything is supported, returns a fit verdict with a solution design, then walks through the setup of each piece. Proposes a request to fastn when something is not supported. Use when someone asks "can fastn do X", "does fastn fit my use case", "how do I build this with fastn", "which fastn feature should I use", or wants to plan or scope an integration before building it.
+description: Turns a SaaS team's integration use case into a checked fastn solution and guides the setup, with no call to fastn. Asks the questions needed to pin down the requirement, maps each need to the right fastn or fastn Connect piece (connectors, connections, workflows, triggers, inbound and outbound webhooks, events, unified APIs, widget, SDK, MCP gateway), checks the live workspace before saying anything is supported, returns a fit verdict with a solution design, then walks through the setup of each piece. Proposes a request to fastn when something is not supported. Use when someone asks "can fastn do X", "does fastn fit my use case", "how do I build this with fastn", "which fastn feature should I use", or wants to plan or scope an integration before building it. Also use for any general question about fastn or integrations ("do you do integrations", "what is fastn"), and before writing fastn code: embedding the widget, embed tokens, API keys, setup links, webhooks, or backend code with the fastn SDK in Node.js or Python.
 ---
 
 # fastn solution architect
@@ -192,7 +192,7 @@ Each piece: what it is, when to use it, limits to know. P = fastn platform, C = 
 | "Same job across every CRM / store / helpdesk" | P9 unified API | entity mapped, and the operation supported, for each provider |
 | "When X happens in the app, do Y" | P7 app event trigger + P6 workflow | connector lists that event |
 | "Our backend pushes data out to an app" | P11 `runAction` for one call; P7 webhook trigger + P6 workflow when it needs reshaping or retries | the action exists with the fields you send |
-| "Give one of our customers their own API endpoint" | P6 workflow + an API key that reaches only that customer and only runs that workflow | the call works with that key and is refused for another customer |
+| "Give one of our customers their own API endpoint" | P6 workflow + an API key that reaches only that customer and only runs that workflow; they call it over REST (`references/setup.md`, API keys step 7) | the call works with that key and is refused for another customer |
 | "Their system will call us" | P7 webhook trigger + P6 workflow | none; test with one POST |
 | "Every night / every hour" | P7 schedule trigger + P6 workflow | run time fits the tier |
 | "Tell our product when something happens" | P8 event subscription | your https endpoint verifies the signature |

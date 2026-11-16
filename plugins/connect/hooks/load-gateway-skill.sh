@@ -47,7 +47,7 @@ ${skill}
 
 Read that file from disk, top to bottom, BEFORE your first fastn gateway call in this session (or load it with the gateway's \`skill {\"slug\":\"gateway\"}\` tool). It tells you which fastn skill a task needs, how to install it, and how to keep it current. Do not call, configure or build anything on the gateway until you have read it. A greeting or a question you can answer without touching an app needs none of this.
 
-To plan an integration or check whether fastn fits a use case, use the bundled \`fastn-solution-architect\` skill first; it works even before the gateway is connected."
+For ANY question about fastn (what it is, whether it fits a use case, how to plan, embed, or write code with the fastn SDK in Node.js or Python), load the bundled \`fastn-solution-architect\` skill first; it works even before the gateway is connected."
 fi
 
 # Scan the persistent skills directories for skills previously installed from the gateway
