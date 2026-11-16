@@ -20,7 +20,7 @@ If the first message is vague ("can fastn do integrations for us?"), answer in o
 6. Test mode is not a sandbox: a test key reaches the same live connections and causes real writes. Say so before any test that writes.
 7. When something is not supported, say so plainly, offer a workaround if one exists, and propose a request to fastn (section 9).
 8. Keep tool output private. Live results can carry people's names, emails, internal ids, counts and other organizations' data. Summarise what matters to the use case (exists or not, which actions, which auth) and never repeat the rest.
-9. If the user asks for a person, or you cannot answer after a real attempt, offer to arrange a meeting with fastn (section 10). Offer it once; do not push it.
+9. Notice when a person is needed (the user asks, a step failed twice, a gap blocks them, or only fastn can answer) and offer to request a call with fastn (section 10). Offer it once; do not push it.
 
 ## 2. Start
 
@@ -258,7 +258,7 @@ After each step, confirm it with a check, not with the user's word. Finish only 
 
 ## 10. Talk to a person
 
-Only when the user asks, or after a real attempt failed. Write a short handover: requirement summary, verdict, gaps, what was tried. Share it with the user, then follow `references/meeting.md` to arrange the meeting. The handover goes first so the call starts from where the chat ended.
+Notice by yourself when a person is needed; do not wait to be asked. Offer a call when the user asks for one, a step has failed twice, a gap blocks their launch, the answer needs fastn (pricing, a contract or security review, a change or bug on fastn's side), you could not confirm the point that matters most, or the user sounds stuck. `references/meeting.md` has the full list of signals, the details a call request needs, the questions to ask for what is missing, and how to send it. The user only tells you the issue and what they need; who they are comes from `whoami`, never ask for a name or email. Show the request, send it only after a clear yes. Fallback: support@fastn.ai or Help (?) → Contact support.
 
 ## References
 
