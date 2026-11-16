@@ -241,7 +241,7 @@ Take the order of work one step at a time. For each piece, open `references/setu
 - A missing connector or action → `connector_builder`
 - Proving it works end to end → `workflow_verifier`
 
-Backend code with the SDK → `references/sdk.md`. Anything odd → `references/edge-cases.md`.
+Backend code with the SDK → `references/sdk.md`. Anything odd → `references/edge-cases.md`. With every setup step, give the matching public docs page from `references/docs-links.md`, so the user can check the exact fields.
 After each step, confirm it with a check, not with the user's word. Finish only when one real run worked.
 
 ## 9. When fastn does not support it
@@ -267,3 +267,4 @@ Only when the user asks, or after a real attempt failed. Write a short handover:
 - `references/edge-cases.md`: the hard cases and what to do in each.
 - `references/examples.md`: worked examples.
 - `references/meeting.md`: how to arrange a meeting with fastn.
+- `references/docs-links.md`: the public docs page for each topic.
