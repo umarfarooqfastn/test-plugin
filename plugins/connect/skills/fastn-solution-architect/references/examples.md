@@ -5,21 +5,28 @@ Made-up companies and example apps. They show the shape of a good answer, not fa
 ## 1. Fits: CRM sync into an invoicing product
 **User**: "We're Ledgerly, invoicing software. When a deal closes in our customer's CRM we want to create a draft invoice. Customers use different CRMs."
 
-**Requirement summary**: product = invoicing; job = closed deal → draft invoice; systems = customer's CRM (several) + Ledgerly; direction = read CRM, write Ledgerly; timing = on change; each customer connects their own CRM inside Ledgerly.
+**What you learned from the questions**: each customer connects their own CRM inside Ledgerly; it should happen when the deal closes; several CRMs.
 
-**Solution**
-| Need | Piece | Set up |
-| --- | --- | --- |
-| Customers connect their CRM | P10 widget + P4 connections | Widget with the CRM integrations |
-| Know when a deal closes | P7 app event trigger | One per CRM that lists the event |
-| Same deal shape across CRMs | P9 unified API, crm/opportunity | Read the deal |
-| Create the invoice | P5 + P6 workflow | Ledgerly connector, scope `billing` |
-| Tell Ledgerly it worked | P8 workflow event | Endpoint + signature check |
+**Answer**
 
-Your own checks before answering (not shown to the user): connectors and auth for each CRM, `listConnectorEvents` for the deal event, the unified `get` per provider, that the Ledgerly connector exists, that the endpoint exists.
+Yes, fastn can do this. The CRMs your customers use are in the catalog, and the deal data is covered by one unified API.
 
-**Verdict**: Fits. If one CRM has no deal event, that CRM gets a schedule trigger that polls instead; it goes in the table as the way that CRM works, not as a gap.
-**Prepare**: a sandbox account per CRM, Ledgerly API docs, a public https endpoint, your own OAuth apps for branding.
+How it would work:
+1. **Widget.** Each customer connects their own CRM inside Ledgerly.
+2. **App event trigger.** fastn hears when a deal closes in that CRM. A CRM with no deal event gets a schedule trigger that checks for closed deals instead.
+3. **Unified API.** The workflow reads the deal in one shape (`crm` → `opportunity`), whatever the CRM.
+4. **Workflow.** It creates the draft invoice through the Ledgerly connector.
+5. **Event to your product (optional).** fastn tells Ledgerly the invoice was created.
+
+Things to know:
+- Ledgerly needs its own connector on fastn, so its invoice action can be called.
+- With your own OAuth apps, the CRM sign-in screens carry your brand.
+
+What to have ready: a sandbox account per CRM, Ledgerly API docs, a public https endpoint.
+
+Say **build it** and I will set this up in your workspace, or tell me what to change.
+
+Your own checks before answering (not shown to the user): connectors and auth for each CRM, `listConnectorEvents` for the deal event, the unified `get` per provider, that the Ledgerly connector exists.
 
 ## 2. Fits with a gap: app not in the catalog
 **User**: "We need to push orders into Shipwell-X, a regional courier."

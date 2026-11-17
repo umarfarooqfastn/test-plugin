@@ -34,7 +34,7 @@ Check which mode you are in.
 
 ## 3. Questions
 
-Ask only what you still need. Stop when you can fill the requirement summary. A clear, detailed first message can skip most of these, and a short answer is fine for a simple use case. Question 6 (who connects) is the one to ask even then when the message does not say, because the answer changes the design: customers connecting their own accounts need the widget and per-customer connections, one shared account does not.
+Ask only what you still need. Stop when you know enough to design it. A clear, detailed first message can skip most of these, and a short answer is fine for a simple use case. Question 6 (who connects) is the one to ask even then when the message does not say, because the answer changes the design: customers connecting their own accounts need the widget and per-customer connections, one shared account does not.
 
 1. **Product**: what does your product do, and who are your customers?
 2. **Job**: in one sentence, what should happen? ("When a deal closes in the customer's CRM, create an invoice in our product.")
@@ -49,7 +49,7 @@ Ask only what you still need. Stop when you can fill the requirement summary. A 
 
 **Ask with choices.** People answer faster when they can pick. When your AI tool has a way to ask the user a question with selectable options (in Claude this is the ask-the-user question tool), use it for every question that has likely answers: 2 to 4 short options, your best guess first, and the tool's own "Other" for anything else. Question 6 is a good example: "Each customer connects their own account" / "Each user connects their own" / "One shared account of ours". Use plain text only for questions with no sensible options (1 and 2), or when the tool has no such feature; then list the options as a short numbered list.
 
-Then write the **requirement summary** back in 5 to 8 lines and confirm it the same way ("Yes, that is right" / "Change something") before evaluating.
+A separate summary to confirm is only worth it when the use case is large or the answers conflicted; otherwise go straight to the checks and the answer.
 
 ## 4. The pieces (definitions)
 
@@ -210,7 +210,7 @@ When two pieces fit, pick the one with less to build and say why.
 
 ## 6. Live checks
 
-Run the checks for every app and need in the requirement summary. Tool names may carry a prefix.
+Run the checks for every app and need in the use case. Tool names may carry a prefix.
 
 1. `listConnectors` (search by app name) → does the connector exist? A search can return look-alikes or many products of one vendor: confirm the exact product, try the slug, and page through before saying it is missing. Count only connectors the customer can use: a `private` connector is not available to everyone. An admin sees more than a customer does.
 2. `listActions` for that connector → is every needed action there? Open one with `getAction` when the inputs matter. An action that is missing or does not work counts as "partly". A connector or action whose stage reads "test" is still usable, so that label alone is not a gap and is not something to tell the user.
@@ -220,20 +220,21 @@ Run the checks for every app and need in the requirement summary. Tool names may
 6. `listConnections` → is there already a live connection to test with?
 7. Only with the user's OK, one harmless read (`executeAction`) to prove a connection works. "Connected" is not proof.
 
-Keep each result for yourself as supported, partly (what is missing), or not supported. The user sees only the outcome (section 7).
+Keep each result for yourself as supported, partly (what is missing), or not supported. The user sees only the answer (section 7).
 
-## 7. Verdict and solution design
+## 7. The answer
 
-Return this, short:
+The answer is the last thing in your reply, written as normal text, and nothing comes after it. This matters in chat apps: text you write before a tool call (including the question tool) is folded away with the tool steps, so a plan followed by a question tool is never seen by the user. Ask your questions first (section 3), run your checks, then write the answer and stop.
 
-1. **Verdict**: Fits / Fits, with one part still to come / Does not fit today. One line of reason. "Fits" is the verdict whenever fastn can do the whole job, including by another route than the first one you thought of.
-2. **Requirement summary**: as confirmed.
-3. **Solution**: a table with the columns "What you need" and "How fastn does it". It describes the finished setup, not a to-do list, so do not head a column "Step" or number the rows.
-4. **Still to come**: only when something is truly missing on fastn's side for this use case (section 9). One line each: what is missing, what you are doing instead for now, and that you have logged it with the fastn team. Leave this part out when there is nothing; a part with a working route belongs in the solution table, not here.
-5. **What you need to prepare**: test accounts, OAuth app details, your https endpoint, sample records, who has which role.
-6. **Good to know**: one or two lines at most, for a plan or setup detail the user will meet (for example a limit in their plan). Say what you saw in their workspace and point to **Settings → Billing**; do not state prices or what something costs.
+Write it in this shape, short and confident:
 
-Write all of the above as your reply first, in full. Only after it is on the screen, offer to build it with the same question tool you used for the questions in section 3, so the user picks an option ("Build it now" / "Change the plan" / "Just the plan for now") and does not have to type. The order matters: the question tool shows the user only the question, so a plan you have worked out but not yet written is never seen, and "that is the full plan" then points at nothing. If the user picks "Just the plan for now" and the plan is not already on the screen, write it then. Keep the detailed order of work for yourself; the user needs the outcome, not your working steps.
+1. **The answer in one line.** Start with it: "Yes, fastn can do this." when fastn can do the whole job, by any route. "Yes, except one part, which I have logged with fastn: …" when something is really missing (section 9). "Not today, because …" only when it truly does not fit. Add one sentence on what you found in their workspace that makes you sure (the apps are in the catalog, the actions exist).
+2. **How it would work.** A short numbered list, one line per part, each starting with the fastn piece in bold, so the user sees which piece does which job: "**Webhook trigger.** Your backend sends each item to a URL fastn gives you." "**Workflow.** It turns each item into a record and calls the app's action." "**Widget.** Each customer connects their own account inside your product." Name the real actions or unified entities you found, in code style, when that helps a developer.
+3. **Things to know.** Three or four bullets at most, only what the user must decide or prepare for: how each app signs in, a choice that is theirs to make, how to avoid duplicates, a plan detail they will meet (say what you saw and point to **Settings → Billing**; no prices). Leave out your own test results and stage labels.
+4. **Still to come.** Only when something is really missing on fastn's side (section 9): what it is, what you will build instead for now, and that you logged it with fastn.
+5. **What to have ready.** One line: test accounts, a sample payload, an https endpoint, OAuth app details, whichever apply.
+
+End with one plain line that offers the build, for example: "Say **build it** and I will set this up in your workspace, or tell me what to change." Do not use the question tool for this last step, for the reason at the top of this section. Keep the detailed order of work for yourself.
 
 ## 8. Build it
 
