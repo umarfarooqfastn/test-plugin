@@ -277,4 +277,4 @@ Notice by yourself when a person is needed; do not wait to be asked. Offer a cal
 - `references/edge-cases.md`: the hard cases and what to do in each.
 - `references/examples.md`: worked examples.
 - `references/meeting.md`: how to arrange a meeting with fastn.
-- `references/docs-links.md`: the public docs page for each topic.
+- `references/docs-links.md`: the public docs page for each topic, for when this skill does not go deep enough on something. Not needed for most answers.
