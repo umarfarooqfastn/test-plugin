@@ -76,8 +76,8 @@ Goal: a fastn connector for the partner's own product (sign-in plus actions), re
      or whether they will share an OpenAPI file. Don't guess.
 4. **Check it doesn't exist already.** `listConnectors { "search": "<product name>" }`, and match the
    product to a connector by domain first: the connector whose domain or API host is the product's domain
-   or a subdomain of it. A product's domain and its API host often differ (Cin7 is cin7.com, the Cin7 Core
-   connector calls dearsystems.com), so when no host matches, fall back to exactly one connector whose name
+   or a subdomain of it. A product's domain and its API host often differ (Product X is productx.com, while its
+   connector calls api.productx.example), so when no host matches, fall back to exactly one connector whose name
    matches the product's. If exactly one connector matches, offer to reuse it and skip to 1.8; if several
    could, ask which one is theirs. Never register a connector that only looks similar.
 5. **Build the connector.** First load the `connector_builder` skill (`skill {"slug":"connector_builder"}`,

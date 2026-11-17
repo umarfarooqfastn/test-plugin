@@ -70,12 +70,6 @@ Facts that cost a rebuild when missed. Add an entry only when it was verified ag
 - Webhook `createSubscription` requires a resolvable HTTPS `destination` URL.
 - Resolver envelope in subscription code: `res.output.data` (one extra nesting vs most providers).
 
-## Cin7 Core / DEAR Inventory
-- get-by-id always uses a query param (`?ID=`), never a path segment.
-- Webhook subscription code: `ctx.input.event` (not `eventId`).
-- Tasks module is disabled by default — all `/crm/task*` return 400 until enabled in Settings.
-- DELETE is unsupported for the production module (405) and some other resources (502).
-
 ## Miro
 - Webhooks were **permanently discontinued on 2025-12-05** — webhook-management actions all return 500. No replacement; state poll-only.
 - SCIM requires an Enterprise provisioning token (OAuth token insufficient).

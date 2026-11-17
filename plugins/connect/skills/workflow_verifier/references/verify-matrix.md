@@ -26,13 +26,13 @@ Cleanup: delete records your live cases created where a delete action exists; an
 
 ## 1b. DATA PARITY (sync flows) — prove the SAME data landed in the other system
 
-Counts prove the sync RAN; parity proves it moved the RIGHT data. A run can report `created: 25, errors: 0` while every product landed with a truncated name, a price coerced to 0, or an enum silently passed through that the target defaulted — the run summary is the workflow's own claim, so parity is always measured **against the two systems directly**, through the same connectors the workflow uses. Worked example throughout: **HubSpot products → Cin7 products**, matched on SKU.
+Counts prove the sync RAN; parity proves it moved the RIGHT data. A run can report `created: 25, errors: 0` while every product landed with a truncated name, a price coerced to 0, or an enum silently passed through that the target defaulted — the run summary is the workflow's own claim, so parity is always measured **against the two systems directly**, through the same connectors the workflow uses. Worked example throughout: **HubSpot products → Product X products**, matched on SKU.
 
 ### 1b.1 Count reconciliation — nothing unexplained
 
 1. **Eligible set** — via `run_code`, list the SOURCE with the exact approved filters from the config (`fastn.config.get(configId)` → that flow's `conditions`), fully paginated: e.g. every HubSpot product passing the approved category filter → `E` records with their match keys (SKUs).
 2. **Run accounting** — from the run's returned counts: `E === created + updated + skipped + errors`, with `errors === 0` and every `skipped` carrying an APPROVED reason (a config condition), never a coping skip. Any residue (`E` minus the accounted total) is a defect — records the sync never even considered (pagination bug, filter mismatch, cursor skipping).
-3. **Target-side count** — count the target records carrying the sync's match keys (e.g. Cin7 products whose SKU is in the eligible set): must equal `created + updated` (pre-existing matches included). Fewer = writes that claimed success but didn't land; more = duplicates (see 1b.3).
+3. **Target-side count** — count the target records carrying the sync's match keys (e.g. Product X products whose SKU is in the eligible set): must equal `created + updated` (pre-existing matches included). Fewer = writes that claimed success but didn't land; more = duplicates (see 1b.3).
 4. **Corroborate with the diff report** — only when the flow actually uses `fastn.diff` (a batch sync / reconcile / backfill; an event-driven or single-system flow legitimately has none, and its absence is not a finding): `list_diff_reports { workflow_id }` (or `fastn.diff.getReports({ scope, entity, limit })` from `run_code`). The newest report's created/updated/deleted/unchanged stats must agree with the run's counts; disagreement means the run summary and the diff engine saw different data. **`deleted` on a delta or event run is a red flag, not a statistic** — it means `detectDeletes` was left at its default against a partial batch, and the flow is one `applySnapshots`/target-delete away from wiping the customer's target (CHANGE DETECTION in the integration-builder's `references/workflow-patterns.md`). A first run legitimately reports everything as `created`, including records already present in the target — confirm the natural-key search still resolved them to updates rather than duplicates (1b.3).
 
 ### 1b.2 Field-by-field sample audit — same values, not just same records
@@ -41,7 +41,7 @@ Pick a **deliberate sample** (not random-only): ~5-10 records covering the risky
 
 1. Read the SOURCE record (`fastn.connector.hubspot.getProduct` / search by SKU).
 2. Compute the EXPECTED target payload by applying the approved mapping exactly as the workflow does — `fastn.config.get(configId)` → `fastn.evaluator.applyMappings(record, dir.mappings)` (or the flow's own mapping fn, copied verbatim).
-3. Read the TARGET record back (`fastn.connector.cin7.getProduct` by the match key, or by the `id_map` entry).
+3. Read the TARGET record back (`fastn.connector.productx.getProduct` by the match key, or by the `id_map` entry).
 4. Diff expected vs actual **per mapped field**, with the target's normalizations applied knowingly (trim, number formatting, date format, enum translations from the config's value-mappings) — a difference you cannot attribute to a documented normalization is a FAIL naming the field, expected, and actual.
 
 ```js
@@ -53,7 +53,7 @@ const report = [];
 for (const sku of SAMPLE_SKUS) {
   const src = await fastn.connector.hubspot.searchProducts({ sku });   // 1. source
   const expected = fastn.evaluator.applyMappings(src.results[0], dir.mappings); // 2. expected
-  const tgt = await fastn.connector.cin7.getProductBySku({ sku });     // 3. target
+  const tgt = await fastn.connector.productx.getProductBySku({ sku });     // 3. target
   const diffs = Object.entries(expected)
     .filter(([k, v]) => String(tgt[k] ?? "") !== String(v ?? ""))
     .map(([k, v]) => ({ field: k, expected: v, actual: tgt[k] ?? null }));
@@ -66,7 +66,7 @@ The audit result goes in the report's **Data parity** section verbatim (`sample 
 
 ### 1b.3 Identity, duplicates, idempotency
 
-- **No duplicates**: for each sampled key, searching the target by match key returns EXACTLY ONE record (two Cin7 products with the same SKU = the matching step is broken even though every run "succeeded").
+- **No duplicates**: for each sampled key, searching the target by match key returns EXACTLY ONE record (two Product X products with the same SKU = the matching step is broken even though every run "succeeded").
 - **Idempotent re-run**: immediately re-run the flow unchanged → the sampled records report `skipped` (for a `fastn.diff` flow: `stats.unchanged` equals the batch size and `created + updated === 0`), target `modifiedAt` untouched, and the target count from 1b.1 does not grow. A second run that re-writes everything means the diff baseline is not advancing — `applySnapshots` was never called, was called without the records that synced, or the two flows of the pair are using different `scope` strings.
 
 ### 1b.4 Update parity — changes propagate, exactly

@@ -7,7 +7,7 @@ read the execution's `requestUrl`, `requestHeaders` and `requestBody` before con
 
 ### Naming (customer-facing)
 - Connector name = real product name ("Zendesk Support"). Action name = Title Case verb-noun ("Create Contact").
-- Connector `domain` = the product's public website domain (`cin7.com`), not its API host (`inventory.dearsystems.com`). fastn matches a partner's product to its connector by that domain, then by name, so a wrong domain leaves the product undetected. When the connector is the partner's OWN product, register it as their SaaS connector (`upsertSaasConnector { connectorId }`) once it is tested; that registration, not the domain, is what keeps it off their customers' widget cards.
+- Connector `domain` = the product's public website domain (`productx.com`), not its API host (`api.productx.example`). fastn matches a partner's product to its connector by that domain, then by name, so a wrong domain leaves the product undetected. When the connector is the partner's OWN product, register it as their SaaS connector (`upsertSaasConnector { connectorId }`) once it is tested; that registration, not the domain, is what keeps it off their customers' widget cards.
 - Description = full sentence: what, on which resource, key constraints (scope, plan gate, "partial
   update: only sent fields change"). No TODOs, test artifacts or real account ids.
 - Field titles/descriptions are specific ("File name including extension").
@@ -66,7 +66,7 @@ search endpoints want them in the POST body).
   become `[object Object]`); flatten to the wire key (`filter[status]`).
 - **POST/PUT/DELETE** never auto-append: set explicit `httpConfig.queryParams`.
 - Arrays serialize `a,b`; repeated keys (`ids=1&ids=2`) are not expressible.
-- get-by-id is often a query param (`?ID=`), not a path segment. Check the spec (Cin7 always).
+- get-by-id is often a query param (`?ID=`), not a path segment. Check the spec.
 - Never model a secret as a per-action header input: optional header inputs leak into the GET query string.
 
 ### Bodies

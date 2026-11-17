@@ -52,7 +52,7 @@
 For a flow that passed the gate above:
 
 ```js
-const SCOPE = "hubspot-cin7-products";          // one literal, shared by every flow of this pair
+const SCOPE = "hubspot-productx-products";          // one literal, shared by every flow of this pair
 // Hoisted: compare AND applySnapshots must use the SAME config (sandbox.md).
 const comparison = { mode: "PARTIAL", fields: mappedSourceFields };   // only the fields you actually map
 const page = await fastn.connector.hubspot.listProducts({ limit, after });
@@ -119,7 +119,7 @@ Measured against the real engine and Postgres, and all three of these bite at sc
 
 The schedule flow and the event flow of one entity pair MUST pass the **same literal `scope` string** (and the same `entity`), or each keeps its own baseline and reports the other's writes as changes forever. Omitting `scope` defaults it to the executing workflow's id — which silently forks the baseline the moment there is more than one flow, so **always pass it explicitly**. Separate entity pairs and directions get separate `entity` values under a shared scope (or their own scope) so their external ids cannot collide.
 
-**Adding an entity needs NO setup** — no table to create, no registration, no migration. The snapshot table is created lazily in the org's schema on first use and the baseline's identity is `(scope, entity, external_id)`, so a new `entity` string simply IS a new baseline. Two entities under one scope are fully isolated: colliding external ids do not interfere, and a full-scan delete sweep on one never touches the other. But `entity` carries no schema knowledge, so **`keyField` and `comparison.fields` must move with it** — leaving `fields` pointed at the previous entity's paths is a silent failure, since none of them exist on the new record and every record then hashes identically and reports `unchanged` forever. Prefer ONE scope per use case with an `entity` per collection (`scope: "acme-hubspot-cin7"`, `entity: "products"` / `"customers"`) over a scope per entity — the integration's baselines then live under one key you can inspect and clean up together. Omitting `entity` means `""`, which is its own namespace, not a wildcard.
+**Adding an entity needs NO setup** — no table to create, no registration, no migration. The snapshot table is created lazily in the org's schema on first use and the baseline's identity is `(scope, entity, external_id)`, so a new `entity` string simply IS a new baseline. Two entities under one scope are fully isolated: colliding external ids do not interfere, and a full-scan delete sweep on one never touches the other. But `entity` carries no schema knowledge, so **`keyField` and `comparison.fields` must move with it** — leaving `fields` pointed at the previous entity's paths is a silent failure, since none of them exist on the new record and every record then hashes identically and reports `unchanged` forever. Prefer ONE scope per use case with an `entity` per collection (`scope: "acme-hubspot-productx"`, `entity: "products"` / `"customers"`) over a scope per entity — the integration's baselines then live under one key you can inspect and clean up together. Omitting `entity` means `""`, which is its own namespace, not a wildcard.
 
 ### Compare only the fields you MAP
 

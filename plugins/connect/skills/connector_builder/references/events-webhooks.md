@@ -16,7 +16,7 @@ Every connector event setup is exactly one of two types. Decide FIRST, from the 
 | `subscription` / `unsubscription` code | **required** | not needed |
 | `eventKey` | not needed | **required in practice** (see §4) |
 | `requiredActions` with `mappedTo` | not needed | **required whenever payloads carry an account identifier** (see §5) |
-| Examples | GitHub, Jira, BigCommerce, Mailgun, Cin7, Apify, TomTom, Kobo, Chameleon, Salesforce/ServiceNow/Dataverse (hybrid, via script objects) | HubSpot, Slack, Notion, Dropbox, Fireflies, Zixflow, Retently, D365 F&O Business Events |
+| Examples | GitHub, Jira, BigCommerce, Mailgun, Apify, TomTom, Kobo, Chameleon, Salesforce/ServiceNow/Dataverse (hybrid, via script objects) | HubSpot, Slack, Notion, Dropbox, Fireflies, Zixflow, Retently, D365 F&O Business Events |
 
 If the provider has both (rare), prefer `EVENT_WEBHOOK` — automated registration beats manual setup. If a provider has no registration API but lets you create script objects or agents via REST (Salesforce Apex, ServiceNow business rules, Dataverse service endpoints, Flatfile agents), build a **hybrid EVENT_WEBHOOK** whose subscription code creates that object (§3). Per-job callback URLs (`webhookUrl` on a create-job call) are an APP-style setup: state that the customer passes the trigger URL per job.
 
@@ -47,7 +47,7 @@ If the provider has both (rare), prefer `EVENT_WEBHOOK` — automated registrati
 
 - Build (and test) the connector's own webhook-management actions FIRST: `createWebhook`, `deleteWebhook`, usually `listWebhooks`.
 - **Live-only resolver:** `fastn.connector.<slug>.<action>()` inside subscription code only sees `stage:live` actions (verified on Jira, Salesforce, ServiceNow). Promote the webhook-management actions to live before exercising subscriptions; `stage:test` actions → subscription execution fails, typically `execute-subscription` returning 400 with nothing registered upstream. Where promotion is not yet allowed, verify the same upstream call through the actions directly and say the subscription hop itself was not exercised.
-- **The event key gotcha:** inside subscription code the event type arrives as **`ctx.input.event`**, NOT `ctx.input.eventId`. Verified on Cin7 Core, ServiceNow, Salesforce, Dynamics 365 CRM, BigCommerce, Mailgun.
+- **The event key gotcha:** inside subscription code the event type arrives as **`ctx.input.event`**, NOT `ctx.input.eventId`. Verified on ServiceNow, Salesforce, Dynamics 365 CRM, BigCommerce, Mailgun.
 - The fastn webhook URL to register arrives as `ctx.input.webhookUrl`; `inputs[]` entries and execute-time `additionalInputs` are also on `ctx.input`.
 - **Resolver envelope:** the programmatic call returns `{id:'exec_*', output:{...}, success, status}`. Most providers: payload at `res.output`. BigCommerce: `res.output.data` (extra nesting). Always use a safe chain: `res?.output?.data ?? res?.output ?? res`.
 - **Return the provider's subscription id** (`subscriptionId` / `webhookId`) so unsubscription can target it (`subscriptionId` lands on `registeredEvents`); unsubscription code must read it back. A subscribe that returns no id leaves hooks behind forever.

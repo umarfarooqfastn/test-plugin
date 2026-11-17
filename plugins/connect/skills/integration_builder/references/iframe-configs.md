@@ -44,7 +44,7 @@ Every field is optional; `{}` is the hub's defaults. Unknown keys are refused (4
 
 ## How to change one
 
-1. `listEmbedIframeConfigs`. One config: use it. Several: ask which (by name). None: offer to create one, and name it after the product or surface ("Cin7 Connect").
+1. `listEmbedIframeConfigs`. One config: use it. Several: ask which (by name). None: offer to create one, and name it after the product or surface ("Product X Connect").
 2. `getEmbedIframeConfig` and note its `version`.
 3. Translate the request into the SMALLEST patch: send only what changes. `updateEmbedIframeConfig { id, config: { theme: { primary: "#ea580c" } }, baseVersion: <version you read>, note: "<what the user asked, in their words>" }`. Everything else stays as it was. `null` removes a field, or one key inside `theme` / `sections` / `viewOptions`.
    - Turn colour names into a concrete hex and say which one you picked. "Rounder" is a number (e.g. radius 8 → 16), not a word.

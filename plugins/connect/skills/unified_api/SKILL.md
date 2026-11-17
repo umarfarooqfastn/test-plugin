@@ -1,7 +1,7 @@
 ---
 name: unified_api
 description: >-
-  Configure and use the fastn Unified API through the fastn Workflow MCP — a platform-global catalog of categories (crm, ecommerce, ...) with canonical entities (contact, customer, order) that execute across whichever providers each org has connected (HubSpot, Dynamics 365, BigCommerce, Cin7, ...). Covers browsing the catalog, curating it as platform_admin (categories, entities, per-connector mappings with operations/fieldMappings/enrichActions/conditions), verifying with test and query tools, the multi-provider fan-out list shape and cursors, calling fastn.unified from workflow code, attaching a unified entity to a widget (unifiedRefs/unifiedEntityIds, auto connector merge), per-provider widget config forms, and the flat config.unifiedValues shape. Use when asked to create a unified API, add a category/entity, map a connector into a unified entity, call the unified API from a workflow or widget, add a config form to a unified widget, or to debug UNIFIED_* errors, wrong fields, or empty unified data.
+  Configure and use the fastn Unified API through the fastn Workflow MCP — a platform-global catalog of categories (crm, ecommerce, ...) with canonical entities (contact, customer, order) that execute across whichever providers each org has connected (HubSpot, Dynamics 365, BigCommerce, Product X, ...). Covers browsing the catalog, curating it as platform_admin (categories, entities, per-connector mappings with operations/fieldMappings/enrichActions/conditions), verifying with test and query tools, the multi-provider fan-out list shape and cursors, calling fastn.unified from workflow code, attaching a unified entity to a widget (unifiedRefs/unifiedEntityIds, auto connector merge), per-provider widget config forms, and the flat config.unifiedValues shape. Use when asked to create a unified API, add a category/entity, map a connector into a unified entity, call the unified API from a workflow or widget, add a config form to a unified widget, or to debug UNIFIED_* errors, wrong fields, or empty unified data.
 ---
 <!-- fastn skill: unified_api v3 -->
 
@@ -10,7 +10,7 @@ description: >-
 ## How to run
 ## What the Unified API is
 
-One canonical surface per business entity — `GET /api/v1/unified/crm/contact` — that works across whichever provider the CALLING org has connected. The catalog is **platform-global**: `platform_admin` curates it once (owned by the `org_platform` sentinel org); every org reads and executes it against their own connections. Two orgs calling the same endpoint get data from their own HubSpot/Cin7 accounts.
+One canonical surface per business entity — `GET /api/v1/unified/crm/contact` — that works across whichever provider the CALLING org has connected. The catalog is **platform-global**: `platform_admin` curates it once (owned by the platform's own org); every org reads and executes it against their own connections. Two orgs calling the same endpoint get data from their own HubSpot/Product X accounts.
 
 ```
 unified_category  (crm, ecommerce, ...)            ─ platform_admin curates
@@ -46,7 +46,7 @@ Order: category → entity → one mapping per connector → test.
 2. `save_unified_entity { categoryId, slug: "contact", name: "Contact", schema: { email: { type: "string", label: "Email", required: true }, first_name: { type: "string", label: "First name" } } }` — canonical fields are flat, snake_case, and every field carries a human `label` (the config editor renders them).
 3. **PROBE BEFORE MAPPING.** Execute the connector action once (`run_code` / `execute_action`) and read the real output — `recordsPath`, `cursorPath`, `remoteIdPath`, and every `connectorField` dot-path must match reality, not the docs. Real examples:
    - HubSpot `listContacts` → `{ results: [{ id, properties: { email } }], paging: { next: { after } } }` → `recordsPath: "results"`, `cursorPath: "paging.next.after"`, `paramMap: { cursor: "after", pageSize: "limit" }`, fields under `properties.*`.
-   - Cin7 Core `listCustomers` → `{ Total, Page, CustomerList: [{ ID, Name, Contacts: [...] }] }` → `recordsPath: "CustomerList"`, `remoteIdPath: "ID"`, `paramMap: { pageSize: "Limit" }`, **no cursorPath** (page-number pagination has no token — nextCursor stays null).
+   - Product X `listCustomers` → `{ Total, Page, CustomerList: [{ ID, Name, Contacts: [...] }] }` → `recordsPath: "CustomerList"`, `remoteIdPath: "ID"`, `paramMap: { pageSize: "Limit" }`, **no cursorPath** (page-number pagination has no token — nextCursor stays null).
    - BigCommerce `listCustomersV2` → bare array at root → `recordsPath: ""`.
 4. `save_unified_mapping`:
 
@@ -59,7 +59,7 @@ Order: category → entity → one mapping per connector → test.
                 "recordsPath": "results", "cursorPath": "paging.next.after", "remoteIdPath": "id" },
     "get":    { "actionSlug": "getContact", "paramMap": { "id": "contactId" }, "recordsPath": "", "remoteIdPath": "id" },
     "create": { "actionSlug": "createContact", "recordsPath": "", "remoteIdPath": "id",
-                "staticInput": { /* fixed required defaults, e.g. Cin7's Status/Currency/TaxRule */ } }
+                "staticInput": { /* fixed required defaults, e.g. Product X's Status/Currency/TaxRule */ } }
   },
   "fieldMappings": [
     { "connectorField": "properties.email", "connectorLabel": "Email",
@@ -112,7 +112,7 @@ export default async function (ctx) {
 
   // Get / create (single provider; pass provider when several are connected)
   const one = await fastn.unified.crm.contact.get("93763152725", { provider: "hubspot" });
-  const created = await fastn.unified.crm.contact.create({ email: "a@x.com", first_name: "Ada" }, { provider: "hubspot" });
+  const created = await fastn.unified.crm.contact.create({ email: "ada@example.com", first_name: "Ada" }, { provider: "hubspot" });
   return { page, byProvider, one, created };
 }
 ```
@@ -183,8 +183,8 @@ At execution the resolved values for the provider are merged into the connector 
 | Symptom | Check |
 |---|---|
 | Empty `records` but provider has data | `recordsPath` wrong — `test_unified_entity` with `includeRemoteData`/remoteData and re-probe the raw action output. |
-| Canonical fields null | `connectorField` dot-paths don't match the raw record (case matters: Cin7 uses `Name`, HubSpot nests under `properties`). |
-| `nextCursor` always null | Provider has no cursor token (page-number APIs like Cin7) — expected; or `cursorPath` wrong. |
+| Canonical fields null | `connectorField` dot-paths don't match the raw record (case matters: Product X uses `Name`, HubSpot nests under `properties`). |
+| `nextCursor` always null | Provider has no cursor token (page-number APIs like Product X) — expected; or `cursorPath` wrong. |
 | 409 `UNIFIED_MULTIPLE_PROVIDERS` | Several providers connected — pass `provider` (list fan-out never 409s). |
 | 404 `UNIFIED_NO_CONNECTED_PROVIDER` | No ACTIVE connection for any mapped connector in the caller's org — `list_unified_providers` shows which; connect via the normal flows. |
 | 403 on save/delete tools | Session isn't platform_admin in the Platform account — expected for API keys; use the admin UI. |
