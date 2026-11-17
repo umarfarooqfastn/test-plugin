@@ -233,7 +233,7 @@ Return this, short:
 5. **What you need to prepare**: test accounts, OAuth app details, your https endpoint, sample records, who has which role.
 6. **Good to know**: one or two lines at most, for a plan or setup detail the user will meet (for example a limit in their plan). Say what you saw in their workspace and point to **Settings → Billing**; do not state prices or what something costs.
 
-Then offer to build it with the same question tool you used for the questions in section 3, so the user picks an option ("Build it now" / "Change the plan" / "Just the plan for now") and does not have to type. A question written at the end of the answer is easy to miss. Keep the detailed order of work for yourself; the user needs the outcome, not your working steps.
+Write all of the above as your reply first, in full. Only after it is on the screen, offer to build it with the same question tool you used for the questions in section 3, so the user picks an option ("Build it now" / "Change the plan" / "Just the plan for now") and does not have to type. The order matters: the question tool shows the user only the question, so a plan you have worked out but not yet written is never seen, and "that is the full plan" then points at nothing. If the user picks "Just the plan for now" and the plan is not already on the screen, write it then. Keep the detailed order of work for yourself; the user needs the outcome, not your working steps.
 
 ## 8. Build it
 
