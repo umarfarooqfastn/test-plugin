@@ -8,13 +8,15 @@ Made-up companies. They show the shape of a good answer, not facts about the cat
 **Requirement summary**: product = invoicing; job = closed deal → draft invoice; systems = customer's CRM (several) + Ledgerly; direction = read CRM, write Ledgerly; timing = on change; each customer connects their own CRM inside Ledgerly.
 
 **Solution**
-| Need | Piece | Set up | Status |
-| --- | --- | --- | --- |
-| Customers connect their CRM | P10 widget + P4 connections | Widget with the CRM integrations | check connectors and auth |
-| Know when a deal closes | P7 app event trigger | One per CRM that lists the event | check `listConnectorEvents` |
-| Same deal shape across CRMs | P9 unified API, crm/opportunity | Read the deal | check `get` per provider |
-| Create the invoice | P5 + P6 workflow | Ledgerly connector, scope `billing` | Ledgerly connector must exist |
-| Tell Ledgerly it worked | P8 workflow event | Endpoint + signature check | endpoint needed |
+| Need | Piece | Set up |
+| --- | --- | --- |
+| Customers connect their CRM | P10 widget + P4 connections | Widget with the CRM integrations |
+| Know when a deal closes | P7 app event trigger | One per CRM that lists the event |
+| Same deal shape across CRMs | P9 unified API, crm/opportunity | Read the deal |
+| Create the invoice | P5 + P6 workflow | Ledgerly connector, scope `billing` |
+| Tell Ledgerly it worked | P8 workflow event | Endpoint + signature check |
+
+Your own checks before answering (not shown to the user): connectors and auth for each CRM, `listConnectorEvents` for the deal event, the unified `get` per provider, that the Ledgerly connector exists, that the endpoint exists.
 
 **Verdict**: Fits with gaps if one CRM has no deal event; workaround = schedule trigger polling that CRM.
 **Prepare**: a sandbox account per CRM, Ledgerly API docs, a public https endpoint, your own OAuth apps for branding.
