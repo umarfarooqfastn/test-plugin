@@ -1,6 +1,6 @@
 # Worked examples
 
-Made-up companies. They show the shape of a good answer, not facts about the catalog: always run the live checks.
+Made-up companies and example apps. They show the shape of a good answer, not facts about the catalog and not a default proposal: every app, piece and design here is only an example. Build each answer from the user's own use case and the live checks.
 
 ## 1. Fits: CRM sync into an invoicing product
 **User**: "We're Ledgerly, invoicing software. When a deal closes in our customer's CRM we want to create a draft invoice. Customers use different CRMs."
@@ -30,8 +30,8 @@ Your own checks before answering (not shown to the user): connectors and auth fo
 One read, caller waits. No workflow needed: a unified API read (`customer.records({category:"crm", entity:"contact"})`) from the backend. Check which operations each CRM supports first: one may offer `search`, another only `get` by id. Where the operation is missing, use that app's own action with `customer.runAction(...)`. Say why: less to build, nothing to deploy.
 
 ## 4. AI agent use case
-**User**: "Our customers want to use Claude with their data in our product and their Jira."
-C1 customer MCP URL behind a "Connect Claude" button, P5 so your product's actions are tools, P4 user-level Jira connections, C4 policies for write actions. Check: the embed token carries the user id; the customer's client lists only their tools.
+**User**: "Our customers want to use Claude with their data in our product and their ticketing app (for example Jira)."
+C1 customer MCP URL behind a "Connect Claude" button, P5 so your product's actions are tools, P4 user-level connections to that app, C4 policies for write actions. Check: the embed token carries the user id; the customer's client lists only their tools.
 
 ## 5. Does not fit today
 **User**: "We need to read from a mainframe on the customer's private network, no internet access allowed."

@@ -72,7 +72,7 @@ Each piece: what it is, when to use it, limits to know. P = fastn platform, C = 
 
 ### P4. Connections
 - **Is**: one customer's authorized link to one app. It stores the credential, encrypted.
-- **Use**: **per customer** for anything touching customer data; **platform-wide** for your own systems (your Slack, your warehouse). An integration's connections are scoped **organization level** (shared across the customer) or **user level** (each user their own).
+- **Use**: **per customer** for anything touching customer data; **platform-wide** for your own systems (for example your team chat or your warehouse). An integration's connections are scoped **organization level** (shared across the customer) or **user level** (each user their own).
 - **Know**: OAuth tokens are renewed by fastn; if renewal fails the connection becomes Expired. A key or password connection breaks when the key is rotated or the password changes in the app.
 
 ### P5. Connect your product
@@ -118,7 +118,7 @@ Each piece: what it is, when to use it, limits to know. P = fastn platform, C = 
 ### P13. Environments and versions
 - **Is**: Publish creates a version (v1, v2, …). Environments are where versions run; `test` and `live` are built in, and you can add your own.
 - **Use**: always: build and test in `test`, promote to `live`.
-- **Know**: an environment can require review, which opens a pull request on a connected GitHub repository instead of deploying directly.
+- **Know**: an environment can require review, which opens a pull request on a connected code repository (for example GitHub) instead of deploying directly.
 
 ### P14. Operate
 - **Is**: health, alerts, customers, connections, events, executions, traces, sync reports and trigger activity.

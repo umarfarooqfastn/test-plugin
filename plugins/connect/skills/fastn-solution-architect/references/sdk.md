@@ -10,6 +10,8 @@ Two different packages. Do not mix them up.
 The API key is a password. It stays in the backend's secret store and never reaches a browser.
 Full reference: https://docs.fastn.ai (Reference → SDK). Read it for exact fields; the catalog is live data.
 
+The code below uses `hubspot` and `getContact` only as an example. Any connector and action from the catalog work the same way: put in the app and action the user's use case needs, never these by default.
+
 ## Backend SDK
 
 ### Client
@@ -45,7 +47,7 @@ const link = await customer.connect("hubspot", {
 - `customer.connections()` lists the customer's accounts (id, name, connector, status). Keep the account id: it pins a call to one account (`connectionId`) and disconnects it.
 - `customer.disconnect(accountId)` removes one account (you receive `connection.revoked`).
 - `customer.update({ status: "suspended" })` pauses a customer; `customer.remove()` suspends and deletes it, with its accounts and data. Deleting needs the customer suspended first.
-- App changes as events: `customer.watch("hubspot", [...events])` after the app is connected; `customer.watchableEvents(app)` lists what it offers; `customer.unwatch(app)` stops it. Some apps need the customer's own account number.
+- App changes as events: `customer.watch("hubspot", [...events])` (example app) after the app is connected; `customer.watchableEvents(app)` lists what it offers; `customer.unwatch(app)` stops it. Some apps need the customer's own account number.
 
 ### Unified records
 ```typescript
