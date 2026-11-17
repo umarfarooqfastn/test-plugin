@@ -9,7 +9,7 @@ Made-up companies and example apps. They show the shape of a good answer, not fa
 
 **Answer**
 
-Yes, fastn can do this. The CRMs your customers use are in the catalog, and the deal data is covered by one unified API.
+Yes, fastn is a great fit for this. The CRMs your customers use are in the catalog, and the deal data is covered by one unified API.
 
 How it would work:
 1. **Widget.** Each customer connects their own CRM inside Ledgerly.
