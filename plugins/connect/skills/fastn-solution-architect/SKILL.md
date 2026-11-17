@@ -213,7 +213,7 @@ When two pieces fit, pick the one with less to build and say why.
 Run the checks for every app and need in the requirement summary. Tool names may carry a prefix.
 
 1. `listConnectors` (search by app name) → does the connector exist? A search can return look-alikes or many products of one vendor: confirm the exact product, try the slug, and page through before saying it is missing. Count only connectors the customer can use: a `private` connector is not available to everyone. An admin sees more than a customer does.
-2. `listActions` for that connector → is every needed action there? Open one with `getAction` when the inputs matter. An action that is not live, or whose last test failed, counts as "partly".
+2. `listActions` for that connector → is every needed action there? Open one with `getAction` when the inputs matter. An action that is missing or does not work counts as "partly". A connector or action whose stage reads "test" is still usable, so that label alone is not a gap and is not something to tell the user.
 3. `listAuthMethods` → which auth methods, which is the default, is there a provider?
 4. `listConnectorEvents` → is the needed event, or a generic change event that covers it, listed? The list does not say which auth method an event needs, so mark that "not checked" until a trigger shows `Subscribed`.
 5. `listUnifiedCategories` (or `listUnifiedCatalogCategories`, `listUnifiedCatalogEntities` where available), then `listUnifiedEntityProviders` → is the entity mapped for each provider, and does each provider's `operations` include the one you need? The category list shows operations across all providers together; only the per-provider list is proof.
@@ -228,11 +228,11 @@ Return this, short:
 
 1. **Verdict**: Fits / Fits with gaps / Does not fit today. One line of reason.
 2. **Requirement summary**: as confirmed.
-3. **Solution**: a table: need → piece → what to set up.
-4. **Gaps**: only if there are any. Each with a workaround if one exists, and the request to fastn (section 9).
+3. **Solution**: a table with the columns "What you need" and "How fastn does it". It describes the finished setup, not a to-do list, so do not head a column "Step" or number the rows.
+4. **Gaps**: only if there are any, and only things that are missing or do not work for this use case. Each with a workaround if one exists, and the request to fastn (section 9).
 5. **What you need to prepare**: test accounts, OAuth app details, your https endpoint, sample records, who has which role.
 
-Then offer to build it, as a choice the user can pick ("Build it now" / "Change the plan" / "Just the plan for now"). Keep the detailed order of work for yourself; the user needs the outcome, not your working steps.
+Then offer to build it with the same question tool you used for the questions in section 3, so the user picks an option ("Build it now" / "Change the plan" / "Just the plan for now") and does not have to type. A question written at the end of the answer is easy to miss. Keep the detailed order of work for yourself; the user needs the outcome, not your working steps.
 
 ## 8. Build it
 
