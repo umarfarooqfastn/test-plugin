@@ -15,7 +15,7 @@ Check: the customer shows in the list with your id.
 ## P2. Connectors
 1. Open **Integrations → Connectors** and find the app.
 2. Open it and read its actions. Confirm each action the use case needs.
-3. Missing app or action: build it with the `connector_builder` skill, or propose a request.
+3. Missing app or action: build it with the `connector_builder` skill, and log a ticket with fastn when fastn should offer it.
 Check: every needed action is listed, and one read ran successfully.
 
 ## P3. Auth providers (your own OAuth app)

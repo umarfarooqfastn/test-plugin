@@ -1,6 +1,6 @@
 ---
 name: fastn-solution-architect
-description: Turns a SaaS team's integration use case into a checked fastn solution and guides the setup, with no call to fastn. Asks questions to pin down the requirement, maps each need to the right fastn or fastn Connect piece (connectors, connections, workflows, triggers, inbound and outbound webhooks, events, unified APIs, widget, SDK, MCP gateway), checks the live workspace before saying anything is supported, returns a fit verdict and design, then walks through the setup. Proposes a request to fastn when something is not supported. Use when someone asks "can fastn do X", "does fastn fit my use case", "how do I build this with fastn", "which fastn feature should I use", or wants to plan or scope an integration before building it. Also use for any general question about fastn or integrations ("do you do integrations", "what is fastn"), and before writing fastn code: embedding the widget, embed tokens, API keys, setup links, webhooks, or backend code with the fastn SDK in Node.js or Python.
+description: Turns a SaaS team's integration use case into a checked fastn solution and guides the setup, with no call to fastn. Asks questions to pin down the requirement, maps each need to the right fastn or fastn Connect piece (connectors, connections, workflows, triggers, inbound and outbound webhooks, events, unified APIs, widget, SDK, MCP gateway), checks the live workspace before saying anything is supported, returns a fit verdict and design, then walks through the setup. Finds another route on fastn when one layer lacks something, and logs a ticket with fastn by itself when something is really missing. Use when someone asks "can fastn do X", "does fastn fit my use case", "how do I build this with fastn", "which fastn feature should I use", or wants to plan or scope an integration before building it. Also use for any general question about fastn or integrations ("do you do integrations", "what is fastn"), and before writing fastn code: embedding the widget, embed tokens, API keys, setup links, webhooks, or backend code with the fastn SDK in Node.js or Python.
 ---
 
 # fastn solution architect
@@ -18,7 +18,7 @@ If the first message is vague ("can fastn do integrations for us?"), answer in o
 4. Prefer the simplest piece that does the job. Do not design a workflow when a unified API call is enough.
 5. Never ask for a password, API key or secret in the chat. Credentials are entered in fastn's own connect screens.
 6. Test mode is not a sandbox: a test key reaches the same live connections and causes real writes. Say so before any test that writes.
-7. When something is not supported, say so plainly, offer a workaround if one exists, and propose a request to fastn (section 9).
+7. Most things that look missing can be done another way on fastn, so look for that way first and build it. When something really is missing on fastn's side, or the user asks for something new, log a ticket with fastn yourself and tell the user in one line (section 9).
 8. Keep tool output private. Live results can carry people's names, emails, internal ids, counts and other organizations' data. Summarise what matters to the use case (exists or not, which actions, which auth) and never repeat the rest.
 9. Notice when a person is needed (the user asks, a step failed twice, a gap blocks them, or only fastn can answer) and offer to request a call with fastn (section 10). Offer it once; do not push it.
 
@@ -34,7 +34,7 @@ Check which mode you are in.
 
 ## 3. Questions
 
-Ask only what you still need. Stop when you can fill the requirement summary.
+Ask only what you still need. Stop when you can fill the requirement summary. A clear, detailed first message can skip most of these, and a short answer is fine for a simple use case. Question 6 (who connects) is the one to ask even then when the message does not say, because the answer changes the design: customers connecting their own accounts need the widget and per-customer connections, one shared account does not.
 
 1. **Product**: what does your product do, and who are your customers?
 2. **Job**: in one sentence, what should happen? ("When a deal closes in the customer's CRM, create an invoice in our product.")
@@ -98,7 +98,7 @@ Each piece: what it is, when to use it, limits to know. P = fastn platform, C = 
 ### P9. Unified APIs
 - **Is**: one endpoint per business object (for example CRM contact) that routes to whichever provider that customer connected.
 - **Use**: when the same job must work across similar apps and you do not want to branch per app.
-- **Know**: unified APIs exist only for some categories, and each provider supports its own set of operations for an entity (one CRM may have `search`, another only `get` and `list`). List the categories, then check the operation per provider before promising it. Where a provider lacks the operation, fall back to that app's own action (P2).
+- **Know**: unified APIs exist only for some categories, and each provider supports its own set of operations for an entity (one CRM may have `search`, another only `get` and `list`). List the categories, then check the operation per provider before promising it. Where a provider lacks the operation, fall back to that app's own action (P2). A unified API is a layer over the same connectors, and workflow code can call both the unified API and any app's own actions. So when a unified entity lacks an operation or an app, that is not a dead end: do that part with the app's own action in a workflow.
 
 ### P10. Widget and embedding
 - **Is**: the interface your customers use inside your product to connect apps and manage integrations, under your branding, without a fastn account.
@@ -226,11 +226,12 @@ Keep each result for yourself as supported, partly (what is missing), or not sup
 
 Return this, short:
 
-1. **Verdict**: Fits / Fits with gaps / Does not fit today. One line of reason.
+1. **Verdict**: Fits / Fits, with one part still to come / Does not fit today. One line of reason. "Fits" is the verdict whenever fastn can do the whole job, including by another route than the first one you thought of.
 2. **Requirement summary**: as confirmed.
 3. **Solution**: a table with the columns "What you need" and "How fastn does it". It describes the finished setup, not a to-do list, so do not head a column "Step" or number the rows.
-4. **Gaps**: only if there are any, and only things that are missing or do not work for this use case. Each with a workaround if one exists, and the request to fastn (section 9).
+4. **Still to come**: only when something is truly missing on fastn's side for this use case (section 9). One line each: what is missing, what you are doing instead for now, and that you have logged it with the fastn team. Leave this part out when there is nothing; a part with a working route belongs in the solution table, not here.
 5. **What you need to prepare**: test accounts, OAuth app details, your https endpoint, sample records, who has which role.
+6. **Good to know**: one or two lines at most, for a plan or setup detail the user will meet (for example a limit in their plan). Say what you saw in their workspace and point to **Settings → Billing**; do not state prices or what something costs.
 
 Then offer to build it with the same question tool you used for the questions in section 3, so the user picks an option ("Build it now" / "Change the plan" / "Just the plan for now") and does not have to type. A question written at the end of the answer is easy to miss. Keep the detailed order of work for yourself; the user needs the outcome, not your working steps.
 
@@ -254,17 +255,29 @@ For every part also open `references/setup.md` at that piece's section, and give
 
 Confirm each part with a check of your own, not with the user's word, and fix a failed check before moving on. End with the use side: the code or widget the user's own product needs, then one real run with real data. Finish only when that run worked.
 
-## 9. When fastn does not support it
+## 9. When something looks missing
 
-1. Say it plainly: "fastn does not support this today."
-2. Offer a workaround from the definitions if one exists (custom connector, webhook trigger instead of app event, own OAuth provider, schedule instead of event).
-3. Propose a request and show the text before filing:
-   - **Need**: one sentence.
-   - **App and piece**: which app, which action, event or auth method.
-   - **Why it matters**: what it blocks.
-   - **Urgency**: blocking now / needed by a date / nice to have.
-4. When the user agrees, file it with the `feedback` tool: the tool needs a subject, so pass `skill` with this skill's name as the gateway lists it (that routes the report to the fastn team), or, if this skill is not listed on the gateway, `connector` with the app's slug. Set `kind: "other"` and put the text above in `problem`. Tell the user it was filed and that it is a request, not a promise or a date. If the tool refuses, or in definitions mode, give the user the text to send through **Help (?) → Contact support** in the fastn dashboard.
-5. Continue with the rest of the design. One gap rarely blocks everything.
+Work through these in order. The aim is that the user leaves with something that works, and that fastn hears about every real hole without the user having to report it.
+
+**First, find another route.** fastn is layered: a unified API sits on top of connectors, and a workflow can call the unified API, any app's own action, and plain HTTP. So most "missing" things are only missing from one layer:
+
+| It looks missing | The other route |
+|---|---|
+| A unified entity lacks an operation, a field or an app | The app's own action, called from a workflow |
+| An app has no event for the change | A schedule trigger that polls, or a webhook trigger the app or the user's backend calls |
+| The app's own sign-in screen should carry the user's brand | Their own OAuth app as the provider |
+| An action exists but lacks a field | A custom copy of the action with that field (`connector_builder`) |
+| The app is not in the catalog but has an API | A custom connector (`connector_builder`) |
+
+When a route exists, it is the design: put it in the solution table and build it. It is not a gap, and the user does not need to hear that the first idea did not work.
+
+**Then, if it is really missing, log a ticket.** Really missing means fastn cannot do it by any route today, or the user would have to build something fastn should offer (an app with no connector, an action or event nobody can add without fastn, a bug, a feature the user asks for). Log it yourself, as soon as you find it, with the gateway tool **Log a ticket with fastn** (`fastnPlatform__logTicketWithFastn`); `references/meeting.md` has the fields. Do not ask first and do not make the user fill anything in: finding and reporting holes is part of your job, and a user who is asked to file a request usually does not. Then tell them in one plain line, for example: "fastn has no connector for that app yet. I have logged it with the fastn team, and for now I will build a custom connector for it." A ticket is a request, not a promise or a date.
+
+Also log a ticket when the user asks for something new ("it would be good if fastn could …"), even when their use case works without it.
+
+One ticket per separate hole, never the same one twice. If the tool is not in your tool list or the call fails, do not retry more than once: say what is missing and give the user the same text to send through **Help (?) → Contact support**.
+
+**Then carry on.** Build everything that does work. One hole rarely blocks the whole use case. If it does block their launch, also offer a call (section 10).
 
 ## 10. Talk to a person
 

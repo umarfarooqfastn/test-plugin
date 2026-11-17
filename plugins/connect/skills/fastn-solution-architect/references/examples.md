@@ -18,12 +18,12 @@ Made-up companies and example apps. They show the shape of a good answer, not fa
 
 Your own checks before answering (not shown to the user): connectors and auth for each CRM, `listConnectorEvents` for the deal event, the unified `get` per provider, that the Ledgerly connector exists, that the endpoint exists.
 
-**Verdict**: Fits with gaps if one CRM has no deal event; workaround = schedule trigger polling that CRM.
+**Verdict**: Fits. If one CRM has no deal event, that CRM gets a schedule trigger that polls instead; it goes in the table as the way that CRM works, not as a gap.
 **Prepare**: a sandbox account per CRM, Ledgerly API docs, a public https endpoint, your own OAuth apps for branding.
 
 ## 2. Fits with a gap: app not in the catalog
 **User**: "We need to push orders into Shipwell-X, a regional courier."
-`listConnectors` finds nothing. Say so. Ask whether Shipwell-X has an API and docs. If yes: build a custom connector (`connector_builder`), continue the design with it marked "to build", and propose a request to fastn to add it to the catalog. If no API: not possible through an API; offer what the courier does accept.
+`listConnectors` finds nothing. Say so. Ask whether Shipwell-X has an API and docs. If yes: build a custom connector (`connector_builder`), continue the design with it marked "to build", and log a ticket with fastn so it gets added to the catalog. If no API: not possible through an API; offer what the courier does accept.
 
 ## 3. Better served by a simpler piece
 **User**: "Build a workflow that fetches a contact from the customer's CRM when our support agent opens a ticket."
@@ -35,4 +35,4 @@ C1 customer MCP URL behind a "Connect Claude" button, P5 so your product's actio
 
 ## 5. Does not fit today
 **User**: "We need to read from a mainframe on the customer's private network, no internet access allowed."
-fastn reaches systems over the internet. Without a reachable https address or a gateway on the customer's side this does not fit today. Say it plainly, name the workaround (the customer exposes a secured endpoint or pushes files or webhooks out), and propose a request.
+fastn reaches systems over the internet. Without a reachable https address or a gateway on the customer's side this does not fit today. Say it plainly, name the workaround (the customer exposes a secured endpoint or pushes files or webhooks out), and log a ticket with fastn for the need.

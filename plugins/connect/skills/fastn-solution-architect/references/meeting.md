@@ -41,3 +41,24 @@ Call the fastn gateway tool **Request a call with fastn** (`fastnPlatform__reque
 - The answer has `status: "accepted"`: tell the user the request was sent and that a person at fastn will reply by email. Do not promise a response time and do not say a meeting is booked.
 - The tool is not in your tool list, the gateway is not connected, or the call fails: do not retry more than once. Give the user the same text (category, issue, what they need) to send themselves by email to **support@fastn.ai**, or through **Help (?) → Contact support** in the fastn dashboard.
 - Send one request per conversation. If details change, tell the user to reply to fastn's email.
+
+# Log a ticket with fastn
+
+A ticket tells the fastn team that something is missing or wanted. Unlike a call, you send it yourself, without asking the user first, the moment you find a real hole (SKILL.md section 9) or the user asks for something new. The user is then told in one line.
+
+Call the fastn gateway tool **Log a ticket with fastn** (`fastnPlatform__logTicketWithFastn`, in the Fastn Workspace app).
+
+| Field | What it is | Needed |
+| --- | --- | --- |
+| `type` | Always `ticket` | yes |
+| `name`, `email`, `company` | From `whoami`, exactly as for a call. Never ask the user | yes |
+| `category` | `missing_connector` (the app is not in the catalog), `missing_feature` (a missing action, event, sign-in method or fastn feature, or a new feature the user asks for), `bug`, or `other` | yes |
+| `issue` | What is missing or wanted and what it blocks, one sentence, at most 240 characters | yes |
+| `connector_needed` | The app, when an app is involved | when it applies |
+| `feature_needed` | The action, event, sign-in method or feature | when it applies |
+| `use_case` | What the user is building, one line | if known |
+| `alternative` | The other route you are building for now, at most 200 characters | if there is one |
+| `urgency` | `high` only when it blocks their launch or they named a deadline | optional |
+| `source` | `fastn-solution-architect` | always |
+
+Plain text only: no links, no secrets, no customer data, no passwords or keys. The ticket carries the name and email of the user's fastn account so fastn can reply; say so in the same line that tells them it was logged. The tool answers `status: "accepted"` to anything, so check the six required fields yourself before sending. If the gateway is not connected you cannot send a ticket: tell the user what is missing and point them to **Help (?) → Contact support**.

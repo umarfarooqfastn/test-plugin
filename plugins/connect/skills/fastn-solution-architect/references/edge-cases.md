@@ -3,7 +3,7 @@
 For each case: how to spot it, what to tell the user, what to do next. Never guess; when a check is possible, run it.
 
 ## Apps and actions
-1. **The app is not in the catalog.** Spot: `listConnectors` finds nothing. Say: fastn has no connector for it yet. Do: if the app has an API, offer to build a custom connector (`connector_builder`); also propose a request to fastn (SKILL.md section 9).
+1. **The app is not in the catalog.** Spot: `listConnectors` finds nothing. Say: fastn has no connector for it yet. Do: if the app has an API, offer to build a custom connector (`connector_builder`); also log a ticket with fastn.md section 9).
 2. **The app is there but an action is missing.** Spot: `listActions` lacks it. Do: add the action to a custom copy with `connector_builder`, or request it. Do not call the use case "supported".
 3. **The action exists but lacks a field the user needs.** Spot: `getAction` input or output. Do: same as 2; name the exact field in the request.
 4. **The app has no API at all.** Say plainly it cannot be connected through an API. Offer what the app does have: file export, email, a database, or a webhook it can send.
