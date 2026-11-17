@@ -51,4 +51,4 @@ For each case: how to spot it, what to tell the user, what to do next. Never gue
 34. **Private or unfinished connector.** A connector marked private, or actions that are not live or whose last test failed, is not something to promise. Say "partly" and what is missing.
 35. **Unified operation missing for one provider.** The entity is mapped but that app lacks `search` or `get`. Use the app's own action for that provider.
 36. **No event with the business name.** Use the app's generic change event and filter in the workflow.
-37. **You are unsure.** Say "not checked", name the check, and run it or ask the user to.
+37. **You are unsure.** Do not guess. Run the check, or ask the user for the one thing you need, before you answer.

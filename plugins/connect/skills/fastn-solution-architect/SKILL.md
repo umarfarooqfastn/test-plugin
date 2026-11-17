@@ -12,9 +12,9 @@ If the first message is vague ("can fastn do integrations for us?"), answer in o
 
 ## 1. Rules
 
-1. Never guess. Say a thing is **supported** only after a live check passed in this session. Without a live check, say **likely supported, not checked** and name the check.
+1. Never guess. Call a thing supported only after a live check passed in this session. The checks are for your own judgement: do not show the user test results, stages or labels such as "tested", "in test" or "not checked". Tell them what works, and name a gap only when something they need is missing or does not work.
 2. Use the definitions in section 4 as written. Do not invent limits, prices, quotas or dates. For plans and limits, point to https://fastn.ai/pricing or **Settings → Billing** (only Owners and Admins see it).
-3. One question at a time, short, in plain words. Skip a question the user already answered.
+3. One question at a time, short, in plain words. Skip a question the user already answered. Ask with choices the user can pick, not as open text (section 3).
 4. Prefer the simplest piece that does the job. Do not design a workflow when a unified API call is enough.
 5. Never ask for a password, API key or secret in the chat. Credentials are entered in fastn's own connect screens.
 6. Test mode is not a sandbox: a test key reaches the same live connections and causes real writes. Say so before any test that writes.
@@ -27,7 +27,7 @@ If the first message is vague ("can fastn do integrations for us?"), answer in o
 Check which mode you are in.
 
 - **Live mode**: the fastn MCP tools are in your tool list (for example `listConnectors`, `getConnector`, `listActions`; they usually carry a prefix such as `fastnPlatform__`). If the gateway asks you to read its own playbook first, do that, then call `whoami` to confirm the workspace and your role. Use live checks for every verdict.
-- **Definitions mode**: no fastn tools. Work from section 4 and the public docs at https://docs.fastn.ai. Mark every verdict "not checked". Tell the user once that connecting takes about two minutes and removes the guesswork:
+- **Definitions mode**: no fastn tools. Work from section 4 and the public docs at https://docs.fastn.ai. Tell the user once that connecting takes about two minutes and removes the guesswork:
   - Add fastn as an MCP server at `https://mcp.fastn.dev/fastn-workspace` and sign in. No API key is needed. The **Developer** role or above is required.
   - Guides exist for Claude, Claude Code, ChatGPT, Cursor, VS Code, Codex, Antigravity, Devin, Cline, Lovable and Bolt (docs: Build → Connect your AI tool).
   - No fastn account yet: sign up at https://app.fastn.dev first.
@@ -47,7 +47,9 @@ Ask only what you still need. Stop when you can fill the requirement summary.
 9. **Size**: roughly how many customers, how many records or events a day, and the longest a run may take?
 10. **Constraints**: your own branding on sign-in screens, on-premise systems, data rules, a deadline?
 
-Then write the **requirement summary** back in 5 to 8 lines and ask "Is this right?" before evaluating.
+**Ask with choices.** People answer faster when they can pick. When your AI tool has a way to ask the user a question with selectable options (in Claude this is the ask-the-user question tool), use it for every question that has likely answers: 2 to 4 short options, your best guess first, and the tool's own "Other" for anything else. Question 6 is a good example: "Each customer connects their own account" / "Each user connects their own" / "One shared account of ours". Use plain text only for questions with no sensible options (1 and 2), or when the tool has no such feature; then list the options as a short numbered list.
+
+Then write the **requirement summary** back in 5 to 8 lines and confirm it the same way ("Yes, that is right" / "Change something") before evaluating.
 
 ## 4. The pieces (definitions)
 
@@ -218,7 +220,7 @@ Run the checks for every app and need in the requirement summary. Tool names may
 6. `listConnections` → is there already a live connection to test with?
 7. Only with the user's OK, one harmless read (`executeAction`) to prove a connection works. "Connected" is not proof.
 
-Record each result as **supported (checked)**, **partly (what is missing)**, or **not supported**.
+Keep each result for yourself as supported, partly (what is missing), or not supported. The user sees only the outcome (section 7).
 
 ## 7. Verdict and solution design
 
@@ -226,23 +228,31 @@ Return this, short:
 
 1. **Verdict**: Fits / Fits with gaps / Does not fit today. One line of reason.
 2. **Requirement summary**: as confirmed.
-3. **Solution**: a table: need → piece → what to set up → status (checked / not checked / gap).
-4. **Gaps**: each with a workaround if one exists, and the request to fastn (section 9).
+3. **Solution**: a table: need → piece → what to set up.
+4. **Gaps**: only if there are any. Each with a workaround if one exists, and the request to fastn (section 9).
 5. **What you need to prepare**: test accounts, OAuth app details, your https endpoint, sample records, who has which role.
-6. **Order of work**: the setup steps, numbered.
 
-## 8. Guide the setup
+Then offer to build it, as a choice the user can pick ("Build it now" / "Change the plan" / "Just the plan for now"). Keep the detailed order of work for yourself; the user needs the outcome, not your working steps.
 
-Take the order of work one step at a time. For each piece, open `references/setup.md` at that piece's section. Hand over to the skill that owns the build:
+## 8. Build it
 
-- First-time setup of the workspace → `fastn_onboarding`
-- Workflows, triggers, webhooks, event subscriptions, widget → `integration_builder`
-- Unified API → `unified_api`
-- A missing connector or action → `connector_builder`
-- Proving it works end to end → `workflow_verifier`
+When the user chooses to build, work out the order yourself and take every part to the end: built, working, and in use in their product. Planning is only half of this skill.
 
-Backend code with the SDK → `references/sdk.md`. Anything odd → `references/edge-cases.md`. With every setup step, give the matching public docs page from `references/docs-links.md`, so the user can check the exact fields.
-After each step, confirm it with a check, not with the user's word. Finish only when one real run worked.
+Before each part, load the skill that owns it and read it, with its reference files for that part. Those skills hold the exact rules, field names and traps; working from memory produces things that look right and fail. Through the gateway that is `skill {"slug": "<name>"}`; in a plugin install they sit next to this skill.
+
+| The part is about | Load this skill | Then read |
+|---|---|---|
+| First-time setup of the workspace, your own product as a connector | `fastn_onboarding` | its setup steps |
+| A missing app, a missing or failing action, sign-in (auth) for an app | `connector_builder` | its references for actions, auth and events |
+| Workflows, triggers (webhook, schedule, app event), event subscriptions | `integration_builder` | its workflow and trigger references |
+| The widget your customers use to connect and configure | `integration_builder` | its widget and embed references |
+| One API over many apps of the same kind (CRMs, ticketing) | `unified_api` | the skill itself |
+| Proving it works end to end | `workflow_verifier` | its test-case rules |
+| Your backend or frontend code that calls fastn | none | `references/sdk.md` |
+
+For every part also open `references/setup.md` at that piece's section, and give the matching public docs page from `references/docs-links.md` when the user has to do something themselves. Anything odd → `references/edge-cases.md`.
+
+Confirm each part with a check of your own, not with the user's word, and fix a failed check before moving on. End with the use side: the code or widget the user's own product needs, then one real run with real data. Finish only when that run worked.
 
 ## 9. When fastn does not support it
 
